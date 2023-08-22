@@ -3,7 +3,8 @@ type Props = {};
 function TailwindIndicator({}: Props) {
   if (process.env.NODE_ENV === 'production') return null;
   return (
-    <div className="fixed bottom-4 right-4 z-50 h-6 w-6 rounded-full bg-slate-700 text-white text-xs font-medium p-3 font-mono items-center justify-center flex opacity-75">
+    <div className="fixed bottom-4 right-4 z-50 rounded-full bg-slate-700 text-white text-xs font-medium p-3 font-mono items-center justify-center flex opacity-75 flex-col">
+      <p className="font-bold text-sky-500">Built by NTN</p>
       <div className="block sm:hidden">xs</div>
       <div className="hidden sm:block md:hidden lg:hidden xl:hidden 2xl:hidden">sm</div>
       <div className="hidden md:block lg:hidden xl:hidden 2xl:hidden">md</div>
