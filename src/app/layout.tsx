@@ -2,6 +2,7 @@ import clsx from 'clsx';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { Providers } from '../components/providers';
+import TailwindIndicator from '../components/tailwind-indicator';
 import { siteConfig } from '../configs/siteconfig';
 import './globals.css';
 
@@ -52,6 +53,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body className={clsx(inter.className, 'min-h-screen bg-background font-sans antialiased')}>
+        <TailwindIndicator />
         <Providers themeProps={{ attribute: 'class', defaultTheme: 'dark' }}>{children}</Providers>
       </body>
     </html>

@@ -1,7 +1,7 @@
-import { defineDocumentType, makeSource } from 'contentlayer/source-files';
+import { ComputedFields, defineDocumentType, makeSource } from 'contentlayer/source-files';
+import { siteConfig } from './src/configs/siteconfig';
 
-/** @type {import('contentlayer/source-files').ComputedFields} */
-const computedFields = {
+const computedFields: ComputedFields = {
   slug: {
     type: 'string',
     resolve: (doc: { _raw: { flattenedPath: any } }) => `/${doc._raw.flattenedPath}`,
@@ -12,9 +12,9 @@ const computedFields = {
   },
 };
 
-export const Post = defineDocumentType(() => ({
-  name: 'posts',
-  filePathPattern: `**/*.mdx`, // Type of file to parse (every mdx in all subfolders)
+export const Blog = defineDocumentType(() => ({
+  name: 'Blogs',
+  filePathPattern: `blogs/**/*.mdx`, // Type of file to parse (every mdx in all subfolders)
   contentType: 'mdx',
   fields: {
     title: {
@@ -38,9 +38,10 @@ export const Post = defineDocumentType(() => ({
       required: true,
     },
     coverImage: {
-      type: 'image',
+      type: 'string',
       description: 'The cover image of the post',
-      required: false, //We can use auto-generated images based on the title
+      required: false,
+      default: siteConfig.og.image,
     },
     published: {
       type: 'boolean',
@@ -49,14 +50,102 @@ export const Post = defineDocumentType(() => ({
       default: false,
     },
   },
-  computedFields: {
-    url: {
+  computedFields: computedFields,
+}));
+
+export const Event = defineDocumentType(() => ({
+  name: 'Events',
+  filePathPattern: `events/**/*.mdx`, // Type of file to parse (every mdx in all subfolders)
+  contentType: 'mdx',
+  fields: {
+    title: {
       type: 'string',
-      resolve: (post) => `/blogs/${post._raw.flattenedPath}`,
+      description: 'The title of the event',
+      required: true,
+    },
+    date: {
+      type: 'date',
+      description: 'The date of the event',
+      required: true,
+    },
+    description: {
+      type: 'string',
+      description: 'The description of the event',
+      required: true,
+    },
+    coverImage: {
+      type: 'string',
+      description: 'The cover image of the event',
+      required: false,
+      default: siteConfig.og.image,
+    },
+    published: {
+      type: 'boolean',
+      description: 'Whether the event is published',
+      required: false,
+      default: false,
     },
   },
+  computedFields: computedFields,
 }));
+
+export const Author = defineDocumentType(() => ({
+  name: 'Authors',
+  filePathPattern: `authors/**/*.mdx`, // Type of file to parse (every mdx in all subfolders)
+  contentType: 'mdx',
+  fields: {
+    name: {
+      type: 'string',
+      description: 'The name of the author',
+      required: true,
+    },
+    bio: {
+      type: 'string',
+      description: 'The bio of the author',
+      required: true,
+    },
+    avatar: {
+      type: 'string',
+      description: 'The avatar of the author',
+      required: false,
+      default: siteConfig.og.image,
+    },
+  },
+  computedFields: computedFields,
+}));
+
+export const Project = defineDocumentType(() => ({
+  name: 'Projects',
+  filePathPattern: `projects/**/*.mdx`, // Type of file to parse (every mdx in all subfolders)
+  contentType: 'mdx',
+  fields: {
+    title: {
+      type: 'string',
+      description: 'The title of the project',
+      required: true,
+    },
+    description: {
+      type: 'string',
+      description: 'The description of the project',
+      required: true,
+    },
+    coverImage: {
+      type: 'string',
+      description: 'The cover image of the project',
+      required: false,
+      default: siteConfig.og.image,
+    },
+    published: {
+      type: 'boolean',
+      description: 'Whether the project is published',
+      required: false,
+      default: false,
+    },
+  },
+  computedFields: computedFields,
+}));
+
 export default makeSource({
-  contentDirPath: 'data', // Source directory where the content is located
-  documentTypes: [Post],
+  contentDirPath: './contents', // Source directory where the content is located
+  documentTypes: [Blog, Author, Event, Project],
 });

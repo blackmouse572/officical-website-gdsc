@@ -3,21 +3,20 @@ import { withContentlayer } from 'next-contentlayer';
 
 export default withContentlayer({
   reactStrictMode: true,
-  experimental: {
-    turbo: {
-      rules: {
-        // Option format
-        '.md': [
-          {
-            loader: '@mdx-js/loader',
-            options: {
-              format: 'md',
-            },
-          },
-        ],
-        // Option-less format
-        '.mdx': ['@mdx-js/loader'],
+  experimental: {},
+  images: {
+    remotePatterns: [
+      {
+        hostname: 'images.unsplash.com',
+        protocol: 'https',
+        pathname: '/**/*',
       },
-    },
+      {
+        hostname: 'localhost',
+        protocol: 'http',
+        pathname: '/**/*',
+      },
+    ],
+    domains: ['images.unsplash.com', 'localhost'],
   },
 });

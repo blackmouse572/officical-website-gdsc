@@ -6,6 +6,11 @@ export const siteConfig = {
   subtitle: 'This is my personal blog',
   description: 'This is my personal blog',
   name: 'My Blog',
+  og: {
+    image: 'http://localhost:3000/og?title=GDSC',
+    title: 'GDSC',
+    description: 'GDSC',
+  },
 };
 
 export const mainNav: NavItem[] = [
