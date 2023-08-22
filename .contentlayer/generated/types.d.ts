@@ -8,11 +8,28 @@ export { isType } from 'contentlayer/client'
 export type { Markdown, MDX, ImageFieldData, IsoDateTimeString }
 
 /** Document types */
-export type posts = {
+export type Authors = {
   /** File path relative to `contentDirPath` */
   _id: string
   _raw: Local.RawDocumentData
-  type: 'posts'
+  type: 'Authors'
+  /** The name of the author */
+  name: string
+  /** The bio of the author */
+  bio: string
+  /** The avatar of the author */
+  avatar: string
+  /** MDX file body */
+  body: MDX
+  slug: string
+  slugAsParams: string
+}
+
+export type Blogs = {
+  /** File path relative to `contentDirPath` */
+  _id: string
+  _raw: Local.RawDocumentData
+  type: 'Blogs'
   /** The title of the post */
   title: string
   /** The date of the post */
@@ -22,12 +39,53 @@ export type posts = {
   /** The description of the post */
   description: string
   /** The cover image of the post */
-  coverImage?: ImageFieldData | undefined
+  coverImage: string
   /** Whether the post is published */
   published: boolean
   /** MDX file body */
   body: MDX
-  url: string
+  slug: string
+  slugAsParams: string
+}
+
+export type Events = {
+  /** File path relative to `contentDirPath` */
+  _id: string
+  _raw: Local.RawDocumentData
+  type: 'Events'
+  /** The title of the event */
+  title: string
+  /** The date of the event */
+  date: IsoDateTimeString
+  /** The description of the event */
+  description: string
+  /** The cover image of the event */
+  coverImage: string
+  /** Whether the event is published */
+  published: boolean
+  /** MDX file body */
+  body: MDX
+  slug: string
+  slugAsParams: string
+}
+
+export type Projects = {
+  /** File path relative to `contentDirPath` */
+  _id: string
+  _raw: Local.RawDocumentData
+  type: 'Projects'
+  /** The title of the project */
+  title: string
+  /** The description of the project */
+  description: string
+  /** The cover image of the project */
+  coverImage: string
+  /** Whether the project is published */
+  published: boolean
+  /** MDX file body */
+  body: MDX
+  slug: string
+  slugAsParams: string
 }  
 
 /** Nested types */
@@ -38,15 +96,18 @@ export type posts = {
 export type AllTypes = DocumentTypes | NestedTypes
 export type AllTypeNames = DocumentTypeNames | NestedTypeNames
 
-export type DocumentTypes = posts
-export type DocumentTypeNames = 'posts'
+export type DocumentTypes = Authors | Blogs | Events | Projects
+export type DocumentTypeNames = 'Authors' | 'Blogs' | 'Events' | 'Projects'
 
 export type NestedTypes = never
 export type NestedTypeNames = never
 
 export type DataExports = {
   allDocuments: DocumentTypes[]
-  allPosts: posts[]
+  allBlogs: Blogs[]
+  allAuthors: Authors[]
+  allEvents: Events[]
+  allProjects: Projects[]
 }
 
 
@@ -66,7 +127,10 @@ declare global {
 }
 
 export type DocumentTypeMap = {
-  posts: posts
+  Authors: Authors
+  Blogs: Blogs
+  Events: Events
+  Projects: Projects
 }
 
 export type NestedTypeMap = {
