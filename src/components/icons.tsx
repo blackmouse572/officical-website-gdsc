@@ -8,6 +8,8 @@ import {
   CreditCard,
   File,
   FileText,
+  ForwardIcon,
+  HeartIcon,
   HelpCircle,
   ImageIcon as Image,
   Laptop,
@@ -15,6 +17,7 @@ import {
   LucideProps,
   Moon,
   MoreVertical,
+  EyeIcon,
   Pizza,
   Plus,
   Settings,
@@ -23,6 +26,7 @@ import {
   Twitter,
   User,
   X,
+  DotIcon,
 } from 'lucide-react';
 
 export type Icon = LucideIcon;
@@ -30,14 +34,18 @@ export type Icon = LucideIcon;
 export const Icons = {
   logo: Command,
   close: X,
+  share: ForwardIcon,
   chevronLeft: ChevronLeft,
   chevronRight: ChevronRight,
   trash: Trash,
+  eye: EyeIcon,
   post: FileText,
+  dot: DotIcon,
   page: File,
   media: Image,
   settings: Settings,
   billing: CreditCard,
+  heart: HeartIcon,
   ellipsis: MoreVertical,
   add: Plus,
   warning: AlertTriangle,

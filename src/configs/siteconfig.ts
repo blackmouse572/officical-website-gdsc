@@ -1,7 +1,7 @@
 import { NavItem } from '../types';
 
 export const siteConfig = {
-  url: 'https://www.example.com',
+  url: 'http://localhost:3000/',
   title: 'My Blog',
   subtitle: 'This is my personal blog',
   description: 'This is my personal blog',
@@ -10,6 +10,7 @@ export const siteConfig = {
     image: 'http://localhost:3000/og?title=GDSC',
     title: 'GDSC',
     description: 'GDSC',
+    icon: '/images/small-logo.webp',
   },
 };
 
