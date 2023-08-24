@@ -1,13 +1,13 @@
 import { Blogs, allAuthors, allBlogs } from '.contentlayer/generated';
+import TextBlogView from '@components/text-blog-view';
+import TimeDisplay from '@components/time-display';
+import { absoluteUrl } from '@lib/helper';
 import { Card, CardFooter, CardHeader } from '@nextui-org/card';
 import { Image } from '@nextui-org/image';
 import { User } from '@nextui-org/user';
 import { compareDesc, parseISO } from 'date-fns';
 import { Metadata } from 'next';
 import Link from 'next/link';
-import TextBlogView from '../../../components/text-blog-view';
-import TimeDisplay from '../../../components/time-display';
-import { absoluteUrl } from '../../../lib/helper';
 
 export const metadata: Metadata = {
   title: 'Blogs',
