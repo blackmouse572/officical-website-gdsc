@@ -1,10 +1,9 @@
-import { Card, CardBody, CardFooter, CardHeader } from '@nextui-org/card';
+import { Card, CardBody } from '@nextui-org/card';
 import { Link } from '@nextui-org/link';
-import { User } from '@nextui-org/user';
-import clsx from 'clsx';
-import { Blogs, allAuthors } from '../../.contentlayer/generated';
+import { Blogs, allAuthors } from 'contentlayer/generated';
+import { formatDistanceToNow, parseISO } from 'date-fns';
+import vn from 'date-fns/locale/vi';
 import { Icons } from './icons';
-
 type Props = {
   blog: Blogs;
 } & React.ComponentProps<typeof Card>;
@@ -15,39 +14,25 @@ function getAuthorByPost(post: Blogs) {
 
 function TextBlogView({ blog, className, ...props }: Props) {
   const author = getAuthorByPost(blog);
+  const timeDistance = formatDistanceToNow(parseISO(blog.date), {
+    addSuffix: true,
+    locale: vn,
+  });
   return (
-    <Card className={clsx('', className)} shadow="sm" isPressable {...props}>
-      <CardHeader>
-        <User
-          classNames={{
-            name: 'font-medium',
-          }}
-          name={author?.name}
-          description={
-            <Link isExternal href={author?.slugAsParams} className="text-xs hover:underline">
-              @{author?.slugAsParams}
+    <Card shadow="none" isPressable className="group">
+      <CardBody>
+        <h3 className="font-medium group-hover:underline">{blog.title}</h3>
+        <div className="flex items-center gap-1">
+          <p className="text-gray-500 text-xs ">{timeDistance}</p>
+          <Icons.dot className="text-gray-500" size={12} />
+          <p className="text-gray-500 text-xs">
+            by &nbsp;
+            <Link href={`${author?.slug}`} className="text-blue-500 text-xs">
+              {author?.name}
             </Link>
-          }
-          avatarProps={{ src: blog.coverImage }}
-        />
-      </CardHeader>
-      <CardBody className="space-y-2">
-        <h3 className="text-2xl font-bold">{blog.title}</h3>
-        <p className="line-clamp-2 text-sm text-slate-400">{blog.description}</p>
+          </p>
+        </div>
       </CardBody>
-      <CardFooter className="justify-end text-sm text-foreground-300 space-x-1 cursor-default">
-        <p className="text-foreground-300 text-xs">4 min read</p>
-        <Icons.dot />
-        <div className="flex items-center space-x-1">
-          <Icons.eye className="inline-block mr-1" size={18} />
-          <p>1.2k</p>
-        </div>
-        <Icons.dot />
-        <div className="flex items-center space-x-1">
-          <Icons.heart className="inline-block mr-1" size={18} />
-          <p>1.2k</p>
-        </div>
-      </CardFooter>
     </Card>
   );
 }
