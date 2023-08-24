@@ -5,7 +5,7 @@ import { Blogs, allAuthors } from 'contentlayer/generated';
 import { formatDistanceToNow, parseISO } from 'date-fns';
 import vn from 'date-fns/locale/vi';
 import { Icons } from './icons';
-type TextBlogViewProps = {
+type HorizontalBlogViewProps = {
   blog: Blogs;
   isWithImage?: boolean;
   isWithDescription?: boolean;
@@ -17,7 +17,7 @@ function getAuthorByPost(post: Blogs) {
   return allAuthors.find((author) => author.name === post.author);
 }
 
-function TextBlogView({ blog, className, isWithImage, isWithDescription, ...props }: TextBlogViewProps) {
+function HorizontalBlogView({ blog, className, isWithImage, isWithDescription, ...props }: HorizontalBlogViewProps) {
   const author = getAuthorByPost(blog);
   const timeDistance = formatDistanceToNow(parseISO(blog.date), {
     addSuffix: true,
@@ -59,5 +59,5 @@ function TextBlogView({ blog, className, isWithImage, isWithDescription, ...prop
   );
 }
 
-export default TextBlogView;
-export type { TextBlogViewProps };
+export default HorizontalBlogView;
+export type { HorizontalBlogViewProps as TextBlogViewProps };
