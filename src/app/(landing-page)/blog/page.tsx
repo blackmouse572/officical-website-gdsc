@@ -1,13 +1,10 @@
-import { Blogs, allAuthors, allBlogs } from '.contentlayer/generated';
-import TextBlogView from '@components/text-blog-view';
-import TimeDisplay from '@components/time-display';
-import { absoluteUrl } from '@lib/helper';
-import { Card, CardFooter, CardHeader } from '@nextui-org/card';
-import { Image } from '@nextui-org/image';
-import { User } from '@nextui-org/user';
+import { allBlogs } from '.contentlayer/generated';
+import HorizontalBlogView from '@components/horizontal-blog-view';
+import NewsDisplayer from '@components/news-displayer';
+import VericalBlogView from '@components/vertical-blog-view';
+import { Divider } from '@nextui-org/divider';
 import { compareDesc, parseISO } from 'date-fns';
 import { Metadata } from 'next';
-import Link from 'next/link';
 
 export const metadata: Metadata = {
   title: 'Blogs',
@@ -19,54 +16,47 @@ function BlogPage() {
     .sort((a, b) => {
       return compareDesc(parseISO(a.date), parseISO(b.date));
     });
-  const getAuthorByPost = (post: Blogs) => {
-    const author = allAuthors.find((author) => author.name === post.author);
-    return author;
-  };
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center space-y-4">
-      <h1 className="text-4xl font-bold">Blogs</h1>
-      <p className="text-2xl">News and daily blogs written by us</p>
-
-      <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-6 mx-auto px-3 gap-2 md:gap-4">
-        {posts.map((post) => {
-          const author = getAuthorByPost(post);
-
-          return (
-            <Card key={post.slug} shadow="sm" isPressable isFooterBlurred>
-              <CardHeader>
-                <User
-                  name={author?.name ?? 'Unknown'}
-                  description={
-                    <Link
-                      href={absoluteUrl(author?.slug ?? '')}
-                      className="text-xs text-primary-500 hover:underline underline-offset-2"
-                    >
-                      @{author?.slugAsParams}
-                    </Link>
-                  }
-                  avatarProps={{
-                    src: author?.avatar ?? '',
-                  }}
-                />
-              </CardHeader>
-              <Image
-                removeWrapper
-                alt="Card background"
-                className="z-0 w-full h-full object-cover"
-                src={post.coverImage}
-              />
-              <CardFooter className="absolute bg-white/30 bottom-0 border-t-1 border-zinc-100/50 z-10 justify-between">
-                <p className="line-clamp-2 text-sm text-white/80">{post.title}</p>
-                <TimeDisplay time={post.date} />
-              </CardFooter>
-            </Card>
-          );
-        })}
-      </div>
-      <div>
-        <TextBlogView blog={posts[0]} />
-      </div>
+    <main className="flex min-h-screen flex-col items-center justify-center space-y-4 container mx-auto">
+      <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <NewsDisplayer
+          className="col-span-2"
+          header={{
+            title: 'News',
+            href: '/news',
+          }}
+        >
+          <div className="grid grid-cols-[40%_60%] gap-2">
+            <div className="">
+              {posts.map((post) => {
+                return <VericalBlogView key={post.slug} isWithDescription isWithImage blog={post} />;
+              })}
+            </div>
+            <div className="">
+              {posts.map((post) => {
+                return <HorizontalBlogView key={post.slug} blog={post} />;
+              })}
+            </div>
+          </div>
+        </NewsDisplayer>
+        <div className="">
+          <NewsDisplayer
+            header={{
+              title: 'Hots',
+              href: '/hot',
+            }}
+          >
+            {posts.map((post) => {
+              return (
+                <>
+                  <HorizontalBlogView key={post.slug} blog={post} isWithImage />
+                  <Divider />
+                </>
+              );
+            })}
+          </NewsDisplayer>
+        </div>
+      </section>
     </main>
   );
 }

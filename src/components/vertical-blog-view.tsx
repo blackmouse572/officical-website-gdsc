@@ -1,6 +1,6 @@
 import { Card, CardBody } from '@nextui-org/card';
 import { Image } from '@nextui-org/image';
-import { Link } from '@nextui-org/link';
+import { Link as NextLink } from '@nextui-org/link';
 import { Blogs, allAuthors } from 'contentlayer/generated';
 import formatDistanceToNow from 'date-fns/formatDistanceToNow';
 import vn from 'date-fns/locale/vi';
@@ -24,18 +24,18 @@ function VericalBlogView({ blog, ...props }: Props) {
       <CardBody>
         <Image src={blog.coverImage} alt={blog.title} width={300} className="aspect-video" />
         <h3 className="mt-1">
-          <Link underline="hover" href={`${blog.slug}`} className="text-gray-800 text-xl font-medium">
+          <NextLink underline="hover" href={`${blog.slug}`} className="text-gray-800 text-xl font-medium">
             {blog.title}
-          </Link>
+          </NextLink>
         </h3>
         <div className="flex items-center gap-1 mt-2">
           <p className="text-gray-500 text-xs">{timeDistance}</p>
           <Icons.dot className="text-gray-500" size={12} />
           <p className="text-gray-500 text-xs">
             by &nbsp;
-            <Link href={`${author?.slug}`} className="text-blue-500 text-xs">
+            <NextLink href={`${author?.slug}`} className="text-blue-500 text-xs">
               {author?.name}
-            </Link>
+            </NextLink>
           </p>
         </div>
       </CardBody>
