@@ -28,6 +28,7 @@
       "@hooks/*": ["./src/hooks/*"],
       "@types/*": ["./src/types/*"],
       "@config/*": ["./src/config/*"],
+      "@env": ["./env.mjs"],
       "@/*": ["./src/*"],
       "contentlayer/generated": ["./.contentlayer/generated"]
     }
