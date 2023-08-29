@@ -106,8 +106,8 @@ function Editor({ post }: EditorProps) {
             class: ImageJs,
             config: {
               endpoints: {
-                byFile: 'http://localhost:3000/api/upload',
-                byUrl: 'http://localhost:3000/api/upload',
+                byFile: 'http://localhost:3000/editor/image_upload',
+                byUrl: 'http://localhost:3000/editor/image_fetch',
               },
             },
           },

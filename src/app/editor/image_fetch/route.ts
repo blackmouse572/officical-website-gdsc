@@ -6,6 +6,7 @@ import { nanoid } from 'nanoid';
 import { Session } from 'next-auth';
 import { NextRequest, NextResponse } from 'next/server';
 import { Readable } from 'stream';
+import { z } from 'zod';
 
 type UploadFileResponse = {
   success: number; // 0 | 1 (0 means there was an error, 1 means all good)
@@ -14,11 +15,16 @@ type UploadFileResponse = {
   }; // The file object
 };
 
+const uploadUrlSchema = z.object({
+  url: z.string().url(),
+  additionalRequestData: z.any().optional(),
+});
+
 //This route will receive the image from the editor and save it to the server (firebase storage)
 export async function POST(req: NextRequest) {
-  const data = await req.formData();
+  const json = await req.json();
+  const data = uploadUrlSchema.parse(json);
   const session = await getSessionServerSide();
-
   if (!isUserUploadable(session))
     return NextResponse.json<UploadFileResponse>(
       {
@@ -32,49 +38,47 @@ export async function POST(req: NextRequest) {
       }
     );
 
-  //Extract the key-value pairs from the form data
-  for (const entry of Array.from(data.entries())) {
-    const [key, value] = entry;
+  //Get the image from the url
+  const response = await fetch(data.url);
 
-    const isFile = typeof value === 'object';
+  const isFile = response.ok && response.headers.get('content-type')?.startsWith('image/');
 
-    if (isFile) {
-      const blob = value as Blob;
-      //Save the image to firebase storage in `public_images` folder
-      const filename = `public_images/${nanoid()}`;
+  if (isFile) {
+    const blob = await response.blob();
+    //Save the image to firebase storage in `public_images` folder
+    const filename = `public_images/${nanoid()}`;
 
-      //Convert blob to stream
-      //Docs: https://stackoverflow.com/questions/16245767/creating-a-blob-from-a-base64-string-in-javascript
-      const buffer = Buffer.from(await blob.arrayBuffer());
-      const stream = Readable.from(buffer);
+    //Convert blob to stream
+    //Docs: https://stackoverflow.com/questions/16245767/creating-a-blob-from-a-base64-string-in-javascript
+    const buffer = Buffer.from(await blob.arrayBuffer());
+    const stream = Readable.from(buffer);
 
-      const fileRef = bucketAdmin.file(filename, {});
+    const fileRef = bucketAdmin.file(filename, {});
 
-      const uploadStream = fileRef.createWriteStream({
-        contentType: blob.type,
-        resumable: false,
-      });
+    const uploadStream = fileRef.createWriteStream({
+      contentType: blob.type,
+      resumable: false,
+    });
 
-      //Upload the image to firebase storage
-      await new Promise((resolve, reject) => {
-        stream
-          .pipe(uploadStream)
-          .on('error', reject)
-          .on('finish', () => {
-            console.log('New image uploaded to firebase storage: ', filename);
-            resolve(null);
-          });
-      });
+    //Upload the image to firebase storage
+    await new Promise((resolve, reject) => {
+      stream
+        .pipe(uploadStream)
+        .on('error', reject)
+        .on('finish', () => {
+          console.log('New image uploaded to firebase storage: ', filename);
+          resolve(null);
+        });
+    });
 
-      const url = getDownloadUrl(filename);
+    const url = getDownloadUrl(filename);
 
-      return NextResponse.json<UploadFileResponse>({
-        success: 1,
-        file: {
-          url,
-        },
-      });
-    }
+    return NextResponse.json<UploadFileResponse>({
+      success: 1,
+      file: {
+        url,
+      },
+    });
   }
 }
 
