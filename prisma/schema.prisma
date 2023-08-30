@@ -80,6 +80,7 @@ model Post {
   id        String   @id @default(cuid())
   title     String
   content   Json?
+  slug      String   @unique
   published Boolean  @default(false)
   createdAt DateTime @default(now()) @map(name: "created_at")
   updatedAt DateTime @default(now()) @map(name: "updated_at")
@@ -94,6 +95,7 @@ model Project {
   id        String   @id @default(cuid())
   title     String
   content   Json?
+  slug      String   @unique
   published Boolean  @default(false)
   createdAt DateTime @default(now()) @map(name: "created_at")
   updatedAt DateTime @default(now()) @map(name: "updated_at")
@@ -107,6 +109,7 @@ model Event {
   id        String   @id @default(cuid())
   title     String
   content   Json?
+  slug      String   @unique
   published Boolean  @default(false)
   startAt   DateTime @map(name: "start_at")
   endAt     DateTime @map(name: "end_at")

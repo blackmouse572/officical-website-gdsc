@@ -8,7 +8,6 @@ import '@styles/editor.css';
 import { formatDistanceToNowStrict } from 'date-fns';
 import { Key, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
 import { toast } from '../hooks/useToast';
 import { removeBreakAndTrim } from '../lib/helper';
@@ -56,7 +55,6 @@ function Editor({ post }: EditorProps) {
     'discard-all-changes': 'Discard',
   };
   const editorRef = useRef<EditorJs>();
-  const { t } = useTranslation();
   const [isSaving, setIsSaving] = useState(false);
   const [isMounted, setMounted] = useState(false);
 
@@ -221,10 +219,7 @@ function Editor({ post }: EditorProps) {
         <div className="flex justify-between gap-3 items-center">
           <div className="prose-p:my-0">
             <p className="text-stone-500 text-sm">
-              {t('lastSaved', {
-                date: formatDistanceToNowStrict(post.updatedAt || post.createdAt || new Date(), { addSuffix: true }),
-              })}
-              -{' '}
+              Last saved -{' '}
               <span>
                 {formatDistanceToNowStrict(post.updatedAt || post.createdAt || new Date(), {
                   addSuffix: true,
