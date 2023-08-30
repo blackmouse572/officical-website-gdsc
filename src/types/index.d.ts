@@ -32,3 +32,12 @@ declare module '@editorjs/paragraph';
 declare module '@editorjs/simple-image';
 declare module '@editorjs/warning';
 declare module '@editorjs/image';
+
+export const PAGINATION_VALIDATION = z
+  .object({
+    page: z.number().int().positive().optional(),
+    limit: z.number().int().positive().optional(),
+  })
+  .nonstrict();
+
+export type Pagination = z.infer<typeof PAGINATION_VALIDATION>;

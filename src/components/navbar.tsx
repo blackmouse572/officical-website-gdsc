@@ -7,7 +7,7 @@ import React from 'react';
 import { MainNavItem } from '../types';
 import { Icons } from './icons';
 import LoginButton from './login-button';
-import UserDropdown from './user-control';
+import UserDropdown from './user-dropdown';
 
 type Props = {
   items: MainNavItem[];

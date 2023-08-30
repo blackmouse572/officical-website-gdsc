@@ -13,7 +13,7 @@ import {
 import Image from 'next/image';
 import { useMemo } from 'react';
 import { Icons } from './icons';
-import UserDropdown from './user-control';
+import UserDropdown from './user-dropdown';
 
 function EditorNavbar() {
   const MenuToggleItem = useMemo(() => {
