@@ -1,9 +1,8 @@
 import { env } from '@env';
 import { bucketAdmin } from '@lib/adminApp';
-import { getSessionServerSide } from '@lib/auth';
+import { getSessionServerSide, isUserAuthenticated } from '@lib/auth';
 import { ROLE } from '@prisma/client';
 import { nanoid } from 'nanoid';
-import { Session } from 'next-auth';
 import { NextRequest, NextResponse } from 'next/server';
 import { Readable } from 'stream';
 
@@ -19,7 +18,7 @@ export async function POST(req: NextRequest) {
   const data = await req.formData();
   const session = await getSessionServerSide();
 
-  if (!isUserUploadable(session))
+  if (!isUserAuthenticated(session, [ROLE.USER]))
     return NextResponse.json<UploadFileResponse>(
       {
         success: 0,
@@ -76,14 +75,6 @@ export async function POST(req: NextRequest) {
       });
     }
   }
-}
-
-function isUserUploadable(session: Session | null) {
-  if (!session) return false;
-  const user = session.user;
-  if (user.role === ROLE.ADMIN || user.role === ROLE.AUTHOR) return true;
-
-  return false;
 }
 
 function getDownloadUrl(filename: string) {

@@ -1,9 +1,10 @@
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
-import { NextAuthOptions, getServerSession } from 'next-auth';
+import { NextAuthOptions, Session, getServerSession } from 'next-auth';
 import GitHubProvider from 'next-auth/providers/github';
 
 import { db } from '@/lib/db';
 import { env } from '@env';
+import { ROLE } from '@prisma/client';
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(db),
@@ -58,4 +59,15 @@ export const authOptions: NextAuthOptions = {
 
 export function getSessionServerSide() {
   return getServerSession(authOptions);
+}
+
+export function isUserAuthenticated(session: Session | null, exceptRoles: ROLE[] = []) {
+  if (!session) return false;
+  const user = session.user;
+
+  if (exceptRoles.length) {
+    if (exceptRoles.includes(user.role)) return false;
+  }
+
+  return true;
 }
