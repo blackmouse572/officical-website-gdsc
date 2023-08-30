@@ -11,7 +11,7 @@ export interface ProvidersProps {
   themeProps?: ThemeProviderProps;
 }
 
-export function Providers({ children, themeProps }: ProvidersProps) {
+function Providers({ children, themeProps }: ProvidersProps) {
   return (
     <NextUIProvider>
       <SessionProvider>
@@ -20,3 +20,5 @@ export function Providers({ children, themeProps }: ProvidersProps) {
     </NextUIProvider>
   );
 }
+
+export default Providers;
