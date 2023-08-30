@@ -10,7 +10,7 @@ import {
   NavbarMenuItem,
   NavbarMenuToggle,
 } from '@nextui-org/react';
-import Link from 'next/link';
+import Image from 'next/image';
 import { useMemo } from 'react';
 import { Icons } from './icons';
 import UserDropdown from './user-control';
@@ -19,6 +19,10 @@ function EditorNavbar() {
   const MenuToggleItem = useMemo(() => {
     return (
       <>
+        <div className="w-1/2 relative h-12 mx-auto">
+          <Image src="/images/logo_color_long.png" alt="logo" fill objectFit="contain" />
+        </div>
+        <Divider />
         <NavbarMenuItem>
           <UserDropdown />
         </NavbarMenuItem>
@@ -31,17 +35,9 @@ function EditorNavbar() {
     return (
       <>
         <NavbarItem>
-          <Link href="#">Features</Link>
-        </NavbarItem>
-        <NavbarItem isActive>
-          <Link href="#" aria-current="page">
-            Customers
-          </Link>
-        </NavbarItem>
-        <NavbarItem>
-          <Link color="foreground" href="#">
-            Integrations
-          </Link>
+          <div className="w-80 relative aspect-video">
+            <Image src="/images/logo_color_long.png" alt="logo" fill objectFit="contain" />
+          </div>
         </NavbarItem>
       </>
     );

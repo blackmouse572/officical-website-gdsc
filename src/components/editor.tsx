@@ -2,14 +2,17 @@
 
 import EditorJs from '@editorjs/editorjs';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Button, Textarea } from '@nextui-org/react';
+import { Divider, Textarea } from '@nextui-org/react';
 import { Post } from '@prisma/client';
 import '@styles/editor.css';
-import Link from 'next/link';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { formatDistanceToNowStrict } from 'date-fns';
+import { Key, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
-import { Icons } from './icons';
+import { toast } from '../hooks/useToast';
+import { removeBreakAndTrim } from '../lib/helper';
+import SavePostButton from './save-post-button';
 
 interface EditorProps {
   post: Pick<Post, 'id' | 'title' | 'content' | 'authorId' | 'published'> & {
@@ -18,16 +21,42 @@ interface EditorProps {
   };
 }
 const formSchema = z.object({
-  title: z.string().nonempty(),
+  title: z
+    .string()
+    .nonempty()
+    .trim()
+    .min(1)
+    .max(255)
+    .refine((value) => !/\.\s*\n/.test(value), {
+      message: 'Text cannot contain a line break within a sentence',
+    }),
   content: z.any().optional(),
 });
 type FormData = z.infer<typeof formSchema>;
 
 function Editor({ post }: EditorProps) {
-  const { register, handleSubmit } = useForm<FormData>({
+  const { register, handleSubmit, formState, control } = useForm<FormData>({
     resolver: zodResolver(formSchema),
+    defaultValues: {
+      title: post.title,
+      content: post.content,
+    },
   });
+
+  const SAVE_OPTIONS = useMemo<Set<Key>>(() => new Set<Key>(['save', 'save-and-post', 'discard-all-changes']), []);
+  const descriptionsMap = {
+    save: 'Save your post as a draft',
+    'save-and-post': 'Publish your post',
+    'discard-all-changes': 'Discard all changes',
+  };
+
+  const labelsMap: Record<string, string> = {
+    save: 'Save',
+    'save-and-post': 'Publish',
+    'discard-all-changes': 'Discard',
+  };
   const editorRef = useRef<EditorJs>();
+  const { t } = useTranslation();
   const [isSaving, setIsSaving] = useState(false);
   const [isMounted, setMounted] = useState(false);
 
@@ -132,44 +161,93 @@ function Editor({ post }: EditorProps) {
     }
   }, [initEditor, isMounted]);
 
-  const onSubmit = (data: FormData) => {
+  const onSubmit = async (data: FormData) => {
     setIsSaving(true);
-    console.log(data);
-    setIsSaving(false);
+    const title = removeBreakAndTrim(data.title);
+    const content = await editorRef.current?.save();
+
+    const body = {
+      title,
+      content,
+    };
+
+    fetch(`/api/blog`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error('Save failed');
+        toast({
+          title: 'Save successful',
+          description: 'Your post has been saved',
+          variant: 'success',
+        });
+      })
+      .catch((err) => {
+        toast({
+          title: 'Save failed',
+          description: err.message,
+          variant: 'destructive',
+        });
+      })
+      .finally(() => {
+        setIsSaving(false);
+      });
   };
 
   if (!isMounted) return null;
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <div className="grid w-full gap-10">
-        <div className="flex w-full items-center justify-between">
-          <Button color="secondary">
-            <Link href="/" className="flex items-center">
-              <Icons.chevronLeft className="w-5 h-5 cursor-pointer inline-block" />
-              <p className="font-medium">Back</p>
-            </Link>
-          </Button>
-          <p className="text-slate-400 text-sm border border-slate-400 px-4 py-2 rounded-lg cursor-default">
-            <span className="font-medium">{post.published ? 'Published' : 'Draft'}</span> on{' '}
-            {post.createdAt?.toLocaleDateString()}
-          </p>
-        </div>
-        <div className="prose prose-stone mx-auto w-[800px]">
-          <Textarea
-            defaultValue={post.title}
-            placeholder="Enter a title for your post"
-            // className={
-            //   'w-full bg-transparent text-5xl font-bold focus:outline-none max-w-full h-max min-h-fit resize-none'
-            // }
-            variant="underlined"
-            classNames={{
-              input: 'text-5xl font-bold h-fit',
-              base: 'h-fit',
+      <div className="prose prose-stone mx-auto">
+        <Textarea
+          defaultValue={post.title}
+          placeholder="Enter a title for your post"
+          className="mb-4 max-w-screen-sm overflow-hidden"
+          minRows={1}
+          variant="underlined"
+          classNames={{
+            input: 'text-2xl font-bold h-fit lg:text-2xl',
+          }}
+          validationState={formState.errors.title ? 'invalid' : 'valid'}
+          errorMessage={formState.errors.title?.message}
+          {...register('title')}
+        />
+        <div id="editor" {...register('content')} />
+        <Divider className="my-4" />
+        <div className="flex justify-between gap-3 items-center">
+          <div className="prose-p:my-0">
+            <p className="text-stone-500 text-sm">
+              {t('lastSaved', {
+                date: formatDistanceToNowStrict(post.updatedAt || post.createdAt || new Date(), { addSuffix: true }),
+              })}
+              -{' '}
+              <span>
+                {formatDistanceToNowStrict(post.updatedAt || post.createdAt || new Date(), {
+                  addSuffix: true,
+                })}
+              </span>
+            </p>
+            <p className="text-stone-500 text-sm">
+              Created at <span>{post.createdAt?.toLocaleString()}</span>
+            </p>
+          </div>
+          <SavePostButton
+            color="primary"
+            options={SAVE_OPTIONS}
+            labelMap={labelsMap}
+            descriptionMap={descriptionsMap}
+            defaultOption={Array.from(SAVE_OPTIONS)[0]}
+            isLoading={isSaving}
+            onChange={(option) => console.log(option)}
+            onClick={(option) => {
+              console.log(option);
+              onSubmit(body);
             }}
-            {...register('title')}
           />
-          <div id="editor" className="w-full h-full" />
         </div>
       </div>
     </form>
