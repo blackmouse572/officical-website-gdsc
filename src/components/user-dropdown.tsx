@@ -3,6 +3,29 @@ import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { Icons } from './icons';
 
+const USER_DROPDOWN_ITEMS = [
+  {
+    title: 'Profile',
+    href: '/profile',
+    icon: <Icons.user className="w-4 h-4" />,
+  },
+  {
+    title: 'My posts',
+    href: '/profile/blog',
+    icon: <Icons.post className="w-4 h-4" />,
+  },
+  {
+    title: 'My projects',
+    href: '/profile/projects',
+    icon: <Icons.briefcase className="w-4 h-4" />,
+  },
+  {
+    title: 'Events',
+    href: '/profile/events',
+    icon: <Icons.party className="w-4 h-4" />,
+  },
+];
+
 function UserDropdown() {
   const { data } = useSession();
   const user = data?.user;
@@ -39,20 +62,17 @@ function UserDropdown() {
           </DropdownItem>
         </DropdownSection>
         <DropdownSection aria-label={'general'} showDivider>
-          <DropdownItem startContent={<Icons.userCircle className="w-4 h-4" />}>
-            <Link href="/profile" className="">
-              Profile
-            </Link>
-          </DropdownItem>
-          <DropdownItem startContent={<Icons.post className={'w-4 h-4'} />}>
-            <Link href="/profile/post">My posts</Link>
-          </DropdownItem>
-          <DropdownItem startContent={<Icons.briefcase className={'w-4 h-4'} />}>
-            <Link href="/profile/projects">My projects</Link>
-          </DropdownItem>
-          <DropdownItem startContent={<Icons.party className={'w-4 h-4'} />}>
-            <Link href="/profile/events">Events</Link>
-          </DropdownItem>
+          {USER_DROPDOWN_ITEMS.map((item) => (
+            <DropdownItem
+              key={item.title}
+              startContent={item.icon}
+              as={Link}
+              //@ts-ignore
+              href={item.href}
+            >
+              {item.title}
+            </DropdownItem>
+          ))}
         </DropdownSection>
         <DropdownSection aria-label={'sign-out'}>
           <DropdownItem
