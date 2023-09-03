@@ -22,6 +22,7 @@ import {
   Moon,
   MoreVertical,
   PartyPopperIcon,
+  PencilIcon,
   Pizza,
   Plus,
   PlusSquareIcon,
@@ -37,6 +38,7 @@ import {
 export type Icon = LucideIcon;
 
 export const Icons = {
+  pen: PencilIcon,
   logo: Command,
   close: X,
   share: ForwardIcon,

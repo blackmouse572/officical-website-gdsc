@@ -1,20 +1,27 @@
 'use client';
 
+import {
+  DEFAULT_SAVE_OPTION,
+  SAVE_OPTIONS_KEYS,
+  SAVE_OPTION_DESCRIPTIONS,
+  SAVE_OPTION_LABELS,
+  SaveOption,
+} from '@components/editor/editor.contraints';
 import EditorJs from '@editorjs/editorjs';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Divider, Textarea } from '@nextui-org/react';
 import { Post } from '@prisma/client';
 import '@styles/editor.css';
-import { formatDistanceToNowStrict } from 'date-fns';
-import { Key, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { format, formatDistanceToNowStrict, parseISO } from 'date-fns';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { toast } from '../hooks/useToast';
-import { removeBreakAndTrim } from '../lib/helper';
-import SavePostButton from './save-post-button';
+import { toast } from '../../hooks/useToast';
+import { removeBreakAndTrim } from '../../lib/helper';
+import SavePostButton from '../save-post-button';
 
 interface EditorProps {
-  post: Pick<Post, 'id' | 'title' | 'content' | 'authorId' | 'published'> & {
+  post: Pick<Post, 'id' | 'title' | 'content' | 'authorId' | 'published' | 'slug'> & {
     createdAt?: Date;
     updatedAt?: Date;
   };
@@ -34,6 +41,7 @@ const formSchema = z.object({
 type FormData = z.infer<typeof formSchema>;
 
 function Editor({ post }: EditorProps) {
+  console.log('post', post);
   const { register, handleSubmit, formState, control } = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -41,19 +49,6 @@ function Editor({ post }: EditorProps) {
       content: post.content,
     },
   });
-
-  const SAVE_OPTIONS = useMemo<Set<Key>>(() => new Set<Key>(['save', 'save-and-post', 'discard-all-changes']), []);
-  const descriptionsMap = {
-    save: 'Save your post as a draft',
-    'save-and-post': 'Publish your post',
-    'discard-all-changes': 'Discard all changes',
-  };
-
-  const labelsMap: Record<string, string> = {
-    save: 'Save',
-    'save-and-post': 'Publish',
-    'discard-all-changes': 'Discard',
-  };
   const editorRef = useRef<EditorJs>();
   const [isSaving, setIsSaving] = useState(false);
   const [isMounted, setMounted] = useState(false);
@@ -159,22 +154,33 @@ function Editor({ post }: EditorProps) {
     }
   }, [initEditor, isMounted]);
 
-  const onSubmit = async (data: FormData) => {
+  const onSubmit = async (data: FormData, mode: SaveOption) => {
     setIsSaving(true);
-    const title = removeBreakAndTrim(data.title);
-    const content = await editorRef.current?.save();
+    console.log('Mode is ', mode);
+    if (mode === 'discard') {
+      editorRef.current?.clear();
+      if (body.content) {
+        editorRef.current?.render(body.content);
+      }
 
-    const body = {
+      setIsSaving(false);
+      return;
+    }
+    const content = await editorRef.current?.save();
+    const title = removeBreakAndTrim(data.title);
+
+    const _body = {
       title,
       content,
+      mode,
     };
 
-    fetch(`/api/blog`, {
-      method: 'POST',
+    fetch(`/api/blog/${post.slug}`, {
+      method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(body),
+      body: JSON.stringify(_body),
     })
       .then((res) => {
         if (!res.ok) throw new Error('Save failed');
@@ -199,7 +205,11 @@ function Editor({ post }: EditorProps) {
   if (!isMounted) return null;
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+      }}
+    >
       <div className="prose prose-stone mx-auto">
         <Textarea
           defaultValue={post.title}
@@ -219,28 +229,24 @@ function Editor({ post }: EditorProps) {
         <div className="flex justify-between gap-3 items-center">
           <div className="prose-p:my-0">
             <p className="text-stone-500 text-sm">
-              Last saved -{' '}
-              <span>
-                {formatDistanceToNowStrict(post.updatedAt || post.createdAt || new Date(), {
-                  addSuffix: true,
-                })}
-              </span>
+              Last saved:{' '}
+              <span>{formatDistanceToNowStrict(parseISO((post.updatedAt as unknown as string) || ''))}</span> ago
             </p>
             <p className="text-stone-500 text-sm">
-              Created at <span>{post.createdAt?.toLocaleString()}</span>
+              Created at:{' '}
+              <span>{format(parseISO((post.createdAt as unknown as string) || ''), 'hh:mm dd/MM/yyyy')}</span>
             </p>
           </div>
           <SavePostButton
             color="primary"
-            options={SAVE_OPTIONS}
-            labelMap={labelsMap}
-            descriptionMap={descriptionsMap}
-            defaultOption={Array.from(SAVE_OPTIONS)[0]}
+            options={SAVE_OPTIONS_KEYS}
+            labelMap={SAVE_OPTION_LABELS}
+            descriptionMap={SAVE_OPTION_DESCRIPTIONS}
+            defaultOption={DEFAULT_SAVE_OPTION}
             isLoading={isSaving}
-            onChange={(option) => console.log(option)}
-            onClick={(option) => {
-              console.log(option);
-              onSubmit(body);
+            onClick={(o) => {
+              const option: SaveOption = o as SaveOption;
+              onSubmit(body, option);
             }}
           />
         </div>
