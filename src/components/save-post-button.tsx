@@ -9,8 +9,8 @@ type Props = {
   labelMap: Record<string, string>;
   descriptionMap?: Record<string, string>;
   defaultOption?: Key;
-  onChange: (option: Key) => void;
-  onClick: (option: Key) => void;
+  onChange?: (option: Key) => void;
+  onClick?: (option: Key) => void;
 } & React.ComponentProps<typeof Button>;
 
 function SavePostButton({
@@ -33,7 +33,7 @@ function SavePostButton({
     option.forEach((key) => set.add(key.toString()));
     //Update state
     setSelectedOption(set);
-    onChange(Array.from(set)[0]);
+    onChange && onChange(Array.from(set)[0]);
   };
 
   const selectedOptionValue = useCallback(() => {
@@ -45,7 +45,7 @@ function SavePostButton({
       <Button
         color="success"
         onClick={() => {
-          onClick(selectedOptionValue());
+          onClick && onClick(selectedOptionValue());
         }}
         {...props}
       >
