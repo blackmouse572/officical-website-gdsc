@@ -53,7 +53,7 @@ function EditorNavbar() {
       <NavbarContent justify="end">
         <NavbarMenuToggle className="sm:hidden" />
         <NavbarMenu className="flex lg:hidden">{MenuToggleItem}</NavbarMenu>
-        <NavbarItem className="hidden lg:flex">
+        <NavbarItem className="hidden sm:flex">
           <UserDropdown />
         </NavbarItem>
       </NavbarContent>

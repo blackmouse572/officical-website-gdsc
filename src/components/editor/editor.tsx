@@ -12,7 +12,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Divider, Textarea } from '@nextui-org/react';
 import { Post } from '@prisma/client';
 import '@styles/editor.css';
-import { format, formatDistanceToNowStrict, parseISO } from 'date-fns';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -227,16 +226,6 @@ function Editor({ post }: EditorProps) {
         <div id="editor" {...register('content')} />
         <Divider className="my-4" />
         <div className="flex justify-between gap-3 items-center">
-          <div className="prose-p:my-0">
-            <p className="text-stone-500 text-sm">
-              Last saved:{' '}
-              <span>{formatDistanceToNowStrict(parseISO((post.updatedAt as unknown as string) || ''))}</span> ago
-            </p>
-            <p className="text-stone-500 text-sm">
-              Created at:{' '}
-              <span>{format(parseISO((post.createdAt as unknown as string) || ''), 'hh:mm dd/MM/yyyy')}</span>
-            </p>
-          </div>
           <SavePostButton
             color="primary"
             options={SAVE_OPTIONS_KEYS}
