@@ -81,6 +81,7 @@ model Post {
   title     String
   content   Json?
   slug      String   @unique
+  ogImage   String?  @map(name: "og_image")
   published Boolean  @default(false)
   createdAt DateTime @default(now()) @map(name: "created_at")
   updatedAt DateTime @default(now()) @map(name: "updated_at")
@@ -95,6 +96,7 @@ model Project {
   id        String   @id @default(cuid())
   title     String
   content   Json?
+  ogImage   String?  @map(name: "og_image")
   slug      String   @unique
   published Boolean  @default(false)
   createdAt DateTime @default(now()) @map(name: "created_at")
@@ -110,6 +112,7 @@ model Event {
   title     String
   content   Json?
   slug      String   @unique
+  ogImage   String?  @map(name: "og_image")
   published Boolean  @default(false)
   startAt   DateTime @map(name: "start_at")
   endAt     DateTime @map(name: "end_at")

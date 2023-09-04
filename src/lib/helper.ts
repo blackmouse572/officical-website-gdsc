@@ -1,3 +1,4 @@
+import { JsonValue } from '@prisma/client/runtime/library';
 import slugify from 'slugify';
 import { siteConfig } from '../configs/siteconfig';
 
@@ -24,5 +25,30 @@ export function toTitleCase(text: string): string {
 }
 
 export function generateOgImage(text: string): string {
-  return `${siteConfig.url}/api/og?title=${text}`;
+  return `${siteConfig.url}og?title=${text}`;
 }
+
+export const estimateReadingTimeByWordCount = (wordCount: number) => {
+  const wordsPerMinute = 200;
+  const minutes = wordCount / wordsPerMinute;
+  const readTime = Math.ceil(minutes);
+  return readTime;
+};
+
+export const estimateReadingTimeByContent = (content: JsonValue) => {
+  if (!content) return 0;
+  //travel all the way down and count the words in text fields
+  let wordCount = 0;
+  const travel = (node: JsonValue) => {
+    if (typeof node === 'string') {
+      wordCount += node.split(' ').length;
+    } else if (typeof node === 'object') {
+      Object.values(node as any).forEach((value) => {
+        if (typeof value === 'string') wordCount += value.split(' ').length;
+        else travel(value as any);
+      });
+    }
+  };
+  travel(content);
+  return estimateReadingTimeByWordCount(wordCount);
+};

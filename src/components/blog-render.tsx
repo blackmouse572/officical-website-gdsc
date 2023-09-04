@@ -1,11 +1,13 @@
 import { Icons } from '@components/icons';
 import { getSessionServerSide } from '@lib/auth';
+import { estimateReadingTimeByContent, generateOgImage } from '@lib/helper';
 import { Button } from '@nextui-org/button';
 import { Divider } from '@nextui-org/divider';
 import { User as UserDisplay } from '@nextui-org/user';
 import { Post, User } from '@prisma/client';
 import { format } from 'date-fns';
 import Blocks, { DataProp } from 'editorjs-blocks-react-renderer';
+import Image from 'next/image';
 import Link from 'next/link';
 
 type Props = {
@@ -44,10 +46,22 @@ async function BlogRenderer({ blog }: Props) {
         }}
         description={
           <div className="flex items-center space-x-2">
-            {blog.published ? 'Published' : 'Draft'} at &nbsp;
-            <span>{format(new Date(blog.updatedAt), 'dd/MM/yyyy')}</span>
+            <div>
+              <span>{blog.published ? 'Published' : 'Draft'} at &nbsp;</span>
+              <span>{format(new Date(blog.updatedAt), 'dd/MM/yyyy')}</span>
+            </div>
+            <Icons.dot className="w-4 h-4 " />
+            <span>{estimateReadingTimeByContent(blog.content)} min read</span>
           </div>
         }
+      />
+      <Image
+        src={blog.ogImage || generateOgImage(blog.title)}
+        alt={blog.title}
+        width={1200}
+        height={630}
+        className="rounded-md object-contain"
+        blurDataURL={generateOgImage(blog.title)}
       />
       <Blocks data={data} />
       {blog.author?.email === user?.user.email && (
