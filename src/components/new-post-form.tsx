@@ -38,12 +38,12 @@ function NewPostForm({}: Props) {
         toast({
           variant: 'success',
           title: 'Create successful',
-          description: 'Your blog has been created, will redirect to editor page in 3 seconds. Please wait...',
-          duration: 3000,
+          description: 'Your blog has been created, redirecting to editor...',
+          duration: 2500,
           action: (
             <Button
               color={'danger'}
-              variant="light"
+              variant="solid"
               onClick={() => {
                 willNavigate = false;
               }}
@@ -57,7 +57,7 @@ function NewPostForm({}: Props) {
           if (willNavigate) {
             route.push(`/blog/${slug}`);
           }
-        }, 3000);
+        }, 2000);
       })
       .catch((err) => {
         toast({

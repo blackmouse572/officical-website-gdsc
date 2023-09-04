@@ -1,6 +1,6 @@
 import { getSessionServerSide, isUserAuthenticated } from '@lib/auth';
 import { db } from '@lib/db';
-import { slugtify } from '@lib/helper';
+import { generateOgImage, slugtify } from '@lib/helper';
 import { ROLE } from '@prisma/client';
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
@@ -29,6 +29,7 @@ export async function POST(req: NextRequest) {
       published: false,
       authorId: session!.user.id,
       slug: slugtify(data.title),
+      ogImage: data.ogImage || generateOgImage(data.title),
     },
   });
 

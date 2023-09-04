@@ -52,13 +52,11 @@ function UserDropdown() {
           <DropdownItem
             startContent={<Icons.plus className="w-4 h-4" />}
             color="success"
-            classNames={
-              {
-                // title: 'text-success-500',
-              }
-            }
+            as={Link}
+            //@ts-ignore
+            href="/editor"
           >
-            <Link href="/editor">New post</Link>
+            New post
           </DropdownItem>
         </DropdownSection>
         <DropdownSection aria-label={'general'} showDivider>
