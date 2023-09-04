@@ -1,3 +1,4 @@
+import { absoluteUrl } from '@lib/helper';
 import { ImageResponse, NextRequest } from 'next/server';
 
 export const runtime = 'edge';
@@ -5,10 +6,14 @@ export const runtime = 'edge';
 export async function GET(req: NextRequest) {
   const { searchParams } = req.nextUrl;
   const postTitle = searchParams.get('title');
+  const backgroundSlot = searchParams.get('slot');
+
   const font = fetch(new URL('../../../public/fonts/KaiseiTokumin-Bold.ttf', import.meta.url)).then((res) =>
     res.arrayBuffer()
   );
   const fontData = await font;
+  const slot = backgroundSlot ? backgroundSlot : 1;
+  const backgroundUrl = absoluteUrl(`images/og_bg_${slot}.png`);
 
   return new ImageResponse(
     (
@@ -20,7 +25,7 @@ export async function GET(req: NextRequest) {
           flexDirection: 'column',
           alignItems: 'flex-start',
           justifyContent: 'center',
-          backgroundImage: 'url(https://i.imgur.com/r4DkmWl.png)',
+          backgroundImage: `url(${backgroundUrl})`,
         }}
       >
         <div

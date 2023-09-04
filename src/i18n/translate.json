@@ -1,0 +1,18 @@
+{
+  "en": {
+    "translation": {
+      "messages": {
+        "welcome": "Welcome!"
+      }
+    },
+    "lastSaved": "Last saved on {{date, relative}}"
+  },
+  "vi": {
+    "translation": {
+      "messages": {
+        "welcome": "Xin chào"
+      }
+    },
+    "lastSaved": "Lần cuối lưu vào {{date, relative}}"
+  }
+}

@@ -1,10 +1,13 @@
 'use client';
 import { Button, Navbar, NavbarBrand, NavbarContent, NavbarItem } from '@nextui-org/react';
+import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useSelectedLayoutSegment } from 'next/navigation';
 import React from 'react';
 import { MainNavItem } from '../types';
 import { Icons } from './icons';
+import LoginButton from './login-button';
+import UserDropdown from './user-dropdown';
 
 type Props = {
   items: MainNavItem[];
@@ -13,6 +16,7 @@ type Props = {
 
 function MainNavbar({ items, children }: Props) {
   const segments = useSelectedLayoutSegment();
+  const { status, data } = useSession();
   return (
     <Navbar
       classNames={{
@@ -39,14 +43,20 @@ function MainNavbar({ items, children }: Props) {
         })}
       </NavbarContent>
       <NavbarContent className="flex gap-4" justify="end">
-        <NavbarItem className="hidden lg:flex font-medium">
-          <Link href="#">Login</Link>
-        </NavbarItem>
-        <NavbarItem>
-          <Button as={Link} color="primary" href="#" variant="flat">
-            Sign Up
-          </Button>
-        </NavbarItem>
+        {status === 'authenticated' ? (
+          <UserDropdown />
+        ) : (
+          <>
+            <NavbarItem className="hidden lg:flex font-medium">
+              <LoginButton />
+            </NavbarItem>
+            <NavbarItem>
+              <Button as={Link} color="primary" href="#" variant="ghost">
+                Sign Up
+              </Button>
+            </NavbarItem>
+          </>
+        )}
       </NavbarContent>
     </Navbar>
   );

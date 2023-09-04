@@ -1,9 +1,11 @@
-import { withContentlayer } from 'next-contentlayer';
-/** @type {import('next').NextConfig} */
+const { createContentlayerPlugin } = require('next-contentlayer');
 
+/** @type {import('next').NextConfig} */
 export default withContentlayer({
   reactStrictMode: true,
-  experimental: {},
+  experimental: {
+    serverComponentsExternalPackages: ['@prisma/client'],
+  },
   images: {
     remotePatterns: [
       {
