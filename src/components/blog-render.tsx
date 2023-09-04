@@ -35,6 +35,7 @@ function toDataProp(content: any): DataProp {
 async function BlogRenderer({ blog }: Props) {
   const user = await getSessionServerSide();
   const data = toDataProp(blog.content);
+
   return (
     <div className="prose prose-stone mx-auto">
       <h1 className="">{blog.title}</h1>
@@ -45,16 +46,17 @@ async function BlogRenderer({ blog }: Props) {
           alt: blog.author?.name || 'avatar',
         }}
         description={
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-1">
             <div>
               <span>{blog.published ? 'Published' : 'Draft'} at &nbsp;</span>
               <span>{format(new Date(blog.updatedAt), 'dd/MM/yyyy')}</span>
             </div>
-            <Icons.dot className="w-4 h-4 " />
+            <Icons.dot className="w-4 h-4" />
             <span>{estimateReadingTimeByContent(blog.content)} min read</span>
           </div>
         }
       />
+      <p className="text-stone-500 border-l-2 pl-4">{blog.description}</p>
       <Image
         src={blog.ogImage || generateOgImage(blog.title)}
         alt={blog.title}

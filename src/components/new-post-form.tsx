@@ -10,6 +10,7 @@ type Props = {};
 
 function NewPostForm({}: Props) {
   const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const route = useRouter();
   const slug = useMemo(() => {
@@ -19,13 +20,16 @@ function NewPostForm({}: Props) {
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
+
     const _title = title.length > 0 ? toTitleCase(title) : 'Untitled';
+    const _description = e.currentTarget.description.value;
+
     fetch('/api/blog', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ title: _title, slug }),
+      body: JSON.stringify({ title: _title, slug, description: _description }),
     })
       .then((res) => {
         if (!res.ok) {
@@ -99,15 +103,19 @@ function NewPostForm({}: Props) {
             disabled={isLoading}
             size="sm"
             required
+            value={title}
             isRequired
             onChange={(e) => setTitle(e.target.value)}
           />
           <Textarea
+            value={description}
+            name="description"
+            onChange={(e) => setDescription(e.target.value)}
             label="Blog description"
             placeholder='Overall content of the blog. e.g. "This is a blog about..."'
             disabled={isLoading}
             description="This will be used for preview content"
-            maxLength={40}
+            maxLength={255}
             size="sm"
           />
         </CardBody>

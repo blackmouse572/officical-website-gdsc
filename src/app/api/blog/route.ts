@@ -5,9 +5,15 @@ import { ROLE } from '@prisma/client';
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 
+const createPostSchema = z.object({
+  title: z.string().min(3).max(255),
+  ogImage: z.string().optional(),
+  description: z.string().max(255).optional(),
+});
+
 export async function POST(req: NextRequest) {
   const json = await req.json();
-  const data = json;
+  const data = createPostSchema.parse(json);
 
   const session = await getSessionServerSide();
   if (!isUserAuthenticated(session, [ROLE.USER])) {
@@ -29,6 +35,7 @@ export async function POST(req: NextRequest) {
       published: false,
       authorId: session!.user.id,
       slug: slugtify(data.title),
+      description: data.description,
       ogImage: data.ogImage || generateOgImage(data.title),
     },
   });
