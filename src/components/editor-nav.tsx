@@ -1,6 +1,6 @@
 'use client';
+import GoBackButton from '@components/go-back';
 import {
-  Button,
   Divider,
   Navbar,
   NavbarBrand,
@@ -12,7 +12,6 @@ import {
 } from '@nextui-org/react';
 import Image from 'next/image';
 import { useMemo } from 'react';
-import { Icons } from './icons';
 import UserDropdown from './user-dropdown';
 
 function EditorNavbar() {
@@ -46,10 +45,7 @@ function EditorNavbar() {
   return (
     <Navbar isBordered>
       <NavbarBrand>
-        <Button variant="flat">
-          <Icons.chevronLeft className="w-5 h-5 mr-1" />
-          Back
-        </Button>
+        <GoBackButton variant="flat" color="warning" />
       </NavbarBrand>
       <NavbarContent className="hidden sm:flex gap-4" justify="center">
         {NavbarMiddleItems}

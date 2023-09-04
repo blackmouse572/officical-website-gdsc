@@ -7,6 +7,17 @@ export async function GET(request: Request, { params }: { params: { slug: string
     where: {
       slug: params.slug,
     },
+    include: {
+      author: {
+        select: {
+          id: true,
+          email: true,
+          name: true,
+          image: true,
+          role: true,
+        },
+      },
+    },
   });
 
   return NextResponse.json(blog);
@@ -27,6 +38,17 @@ export async function PATCH(request: Request, { params }: { params: { slug: stri
   const blog = await db.post.findUnique({
     where: {
       slug: params.slug,
+    },
+    include: {
+      author: {
+        select: {
+          id: true,
+          email: true,
+          name: true,
+          image: true,
+          role: true,
+        },
+      },
     },
   });
 

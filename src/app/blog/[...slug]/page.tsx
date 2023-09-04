@@ -1,5 +1,5 @@
+import BlogRenderer from '@components/blog-render';
 import EditorNavbar from '@components/editor-nav';
-import Editor from '@components/editor/editor';
 import { absoluteUrl, generateOgImage } from '@lib/helper';
 import { Post } from '@prisma/client';
 import { ResolvingMetadata } from 'next';
@@ -65,7 +65,9 @@ async function BlogPage({ params }: Props) {
   return (
     <main>
       <EditorNavbar />
-      <Editor post={post} />
+      <section className="py-4">
+        <BlogRenderer blog={post} />
+      </section>
     </main>
   );
 }
