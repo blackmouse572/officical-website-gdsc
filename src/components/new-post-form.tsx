@@ -55,7 +55,7 @@ function NewPostForm({}: Props) {
 
         setTimeout(() => {
           if (willNavigate) {
-            route.push(`/blog/${slug}`);
+            route.push(`/blog/${slug}/edit`);
           }
         }, 2000);
       })
