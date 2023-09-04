@@ -1,7 +1,7 @@
 const { createContentlayerPlugin } = require('next-contentlayer');
 
 /** @type {import('next').NextConfig} */
-export default withContentlayer({
+const config = {
   reactStrictMode: true,
   experimental: {
     serverComponentsExternalPackages: ['@prisma/client'],
@@ -21,4 +21,10 @@ export default withContentlayer({
     ],
     domains: ['images.unsplash.com', 'localhost'],
   },
+};
+
+const withContentLayer = createContentlayerPlugin({
+  // ...
 });
+
+module.exports = withContentLayer(config);
