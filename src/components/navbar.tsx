@@ -1,8 +1,7 @@
 'use client';
 import BecomeAMemberButton from '@components/become-member-button';
-import { Navbar, NavbarBrand, NavbarContent, NavbarItem } from '@nextui-org/react';
+import { Link, Navbar, NavbarBrand, NavbarContent, NavbarItem } from '@nextui-org/react';
 import { useSession } from 'next-auth/react';
-import Link from 'next/link';
 import { useSelectedLayoutSegment } from 'next/navigation';
 import React from 'react';
 import { MainNavItem } from '../types';
@@ -21,7 +20,21 @@ function MainNavbar({ items, children }: Props) {
   return (
     <Navbar
       classNames={{
-        item: 'hover:text-primary-500 actived:text-primary-500',
+        item: [
+          'flex',
+          'relative',
+          'h-full',
+          'items-center',
+          "data-[active=true]:after:content-['']",
+          'data-[active=true]:after:absolute',
+          'data-[active=true]:after:bottom-0',
+          'data-[active=true]:after:left-0',
+          'data-[active=true]:after:right-0',
+          'data-[active=true]:after:h-[2px]',
+          'data-[active=true]:after:rounded-[2px]',
+          'data-[active=true]:after:bg-primary',
+          'data-[active=true]:text-primary',
+        ],
       }}
       isBlurred
       isBordered
@@ -35,8 +48,12 @@ function MainNavbar({ items, children }: Props) {
       <NavbarContent className="hidden sm:flex gap-4">
         {items.map((item) => {
           return (
-            <NavbarItem isActive={item.href === segments} key={item.href} className="flex items-center gap-2">
-              <Link aria-current={'page'} href={item.href}>
+            <NavbarItem isActive={item.href === '/' + segments} key={item.href} className="flex items-center gap-2 ">
+              <Link
+                aria-current={'page'}
+                href={item.href}
+                color={item.href === '/' + segments ? 'primary' : 'foreground'}
+              >
                 {item.title}
               </Link>
             </NavbarItem>

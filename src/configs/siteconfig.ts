@@ -18,18 +18,18 @@ export const siteConfig = {
 export const mainNav: NavItem[] = [
   {
     title: 'Events',
-    href: 'events',
+    href: '/events',
   },
   {
     title: 'Projects',
-    href: 'projects',
+    href: '/projects',
   },
   {
     title: 'About',
-    href: 'about',
+    href: '/about',
   },
   {
     title: 'Blog',
-    href: 'blog',
+    href: '/blog',
   },
 ];
