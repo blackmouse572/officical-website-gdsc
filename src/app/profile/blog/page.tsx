@@ -7,12 +7,12 @@ import { Card, CardBody, CardFooter, CardHeader } from '@nextui-org/card';
 import { Post } from '@prisma/client';
 import { Metadata } from 'next';
 import Link from 'next/link';
-
+export const dynamic = 'force-dynamic';
 type Props = {
-  searchParams: { [key: string]: string | string[] | undefined };
+  // searchParams: { [key: string]: string | string[] | undefined };
 };
 
-async function getPostsBySlug() {
+async function getMyPosts() {
   const res = await fetch(absoluteUrl(`/api/blog`), {
     cache: 'no-cache',
   }).then(async (res) => {
@@ -26,8 +26,8 @@ async function getPostsBySlug() {
 export const metadata: Metadata = {
   title: 'My blogs',
 };
-async function ProfileBlogs({ searchParams }: Props) {
-  const blogs = await getPostsBySlug();
+async function ProfileBlogs({}: Props) {
+  const blogs = await getMyPosts();
   return (
     <div className="">
       <MainNavbar items={mainNav} />
