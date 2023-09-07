@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
-import { absoluteUrl } from '@lib/helper';
+import Logo from '@/app/og/logo';
 import clsx from 'clsx';
 
 type Props = {
@@ -45,16 +45,15 @@ const BasicOgImage = (props: Props) => {
         color: 'white',
       }}
     >
+      <h3 tw={(clsx('leading-snug tracking-tight text-center text-white'), size)}>{props.title}</h3>
       <section
-        tw="flex flex-col px-4 py-6 rounded-full justify-center items-center"
+        tw="flex justify-start items-center w-full"
         style={{
           gap: '1rem',
         }}
       >
-        <img src={absoluteUrl('/images/gdsc_white.svg')} alt={'logo'} tw={'h-12'} />
+        <Logo width={1469 / 6} height={150 / 6} />
       </section>
-      <h3 tw={(clsx('leading-tight tracking-tight text-center text-white'), size)}>{props.title}</h3>
-      <p tw={'text-2xl mt-4 text-gray-500'}>{props.desciption}</p>
     </div>
   );
 };

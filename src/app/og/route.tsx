@@ -1,4 +1,5 @@
 import BasicOgImage from '@/app/og/basic-og';
+import { OG_IMAGE_SIZE } from '@/app/og/constraint';
 import { ImageResponse, NextRequest } from 'next/server';
 
 export const runtime = 'edge';
@@ -23,18 +24,14 @@ export async function GET(req: NextRequest) {
       </div>
     ),
     {
-      width: 1920,
-      height: 1080,
+      width: OG_IMAGE_SIZE.width,
+      height: OG_IMAGE_SIZE.height,
       fonts: [
         {
           name: 'Poppins',
           data: await getPopinsFont(),
           style: 'normal',
-        },
-        {
-          name: 'Kaisei Tokumin',
-          data: await getKaiseiFont(),
-          style: 'normal',
+          weight: 700,
         },
       ],
     }
@@ -42,13 +39,7 @@ export async function GET(req: NextRequest) {
 }
 
 async function getPopinsFont() {
-  const res = await fetch(new URL('../../../public/fonts/SVN-Poppins-Bold.ttf', import.meta.url));
-  const font = await res.arrayBuffer();
-  return font;
-}
-
-async function getKaiseiFont() {
-  const res = await fetch(new URL('../../../public/fonts/KaiseiTokumin-Bold.woff', import.meta.url));
+  const res = await fetch(new URL('../../../public/fonts/SVN-Poppins-Bold.woff', import.meta.url));
   const font = await res.arrayBuffer();
   return font;
 }
