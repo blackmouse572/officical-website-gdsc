@@ -1,7 +1,8 @@
+import { env } from 'process';
 import { NavItem } from '../types';
 
 export const siteConfig = {
-  url: 'http://localhost:3000/',
+  url: env.NEXTAUTH_URL,
   title: 'My Blog',
   subtitle: 'This is my personal blog',
   description: 'This is my personal blog',

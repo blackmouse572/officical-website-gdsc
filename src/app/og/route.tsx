@@ -1,15 +1,11 @@
 import BasicOgImage from '@/app/og/basic-og';
-import { ImageResponse, NextRequest } from 'next/server';
+import { OG_IMAGE_SIZE } from '@/app/og/constraint';
 
 export const runtime = 'edge';
 
 export async function GET(req: NextRequest) {
   const { searchParams } = req.nextUrl;
   const postTitle = searchParams.get('title');
-  const font = fetch(new URL('../../../public/fonts/KaiseiTokumin-Bold.ttf', import.meta.url)).then((res) =>
-    res.arrayBuffer()
-  );
-  const fontData = await font;
 
   return new ImageResponse(
     (
@@ -27,17 +23,12 @@ export async function GET(req: NextRequest) {
       </div>
     ),
     {
-      width: 1920,
-      height: 1080,
+      width: OG_IMAGE_SIZE.width,
+      height: OG_IMAGE_SIZE.height,
       fonts: [
         {
           name: 'Poppins',
           data: await getPopinsFont(),
-          style: 'normal',
-        },
-        {
-          name: 'Kaisei Tokumin',
-          data: await getKaiseiFont(),
           style: 'normal',
         },
       ],
@@ -46,13 +37,8 @@ export async function GET(req: NextRequest) {
 }
 
 async function getPopinsFont() {
-  const res = await fetch(new URL('../../../public/fonts/SVN-Poppins-Bold.ttf', import.meta.url));
-  const font = await res.arrayBuffer();
-  return font;
-}
+  const res = await fetch(new URL('../../../public/fonts/SVN-Poppins-Bold.woff', import.meta.url));
 
-async function getKaiseiFont() {
-  const res = await fetch(new URL('../../../public/fonts/KaiseiTokumin-Bold.woff', import.meta.url));
   const font = await res.arrayBuffer();
   return font;
 }

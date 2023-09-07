@@ -7,17 +7,14 @@ import { Card, CardBody, CardFooter, CardHeader } from '@nextui-org/card';
 import { Post } from '@prisma/client';
 import { Metadata } from 'next';
 import Link from 'next/link';
-
+export const dynamic = 'force-dynamic';
 type Props = {
-  searchParams: { [key: string]: string | string[] | undefined };
+  // searchParams: { [key: string]: string | string[] | undefined };
 };
 
-async function getPostsBySlug(searchParams?: Record<string, any>) {
+async function getMyPosts() {
   const res = await fetch(absoluteUrl(`/api/blog`), {
-    next: {
-      revalidate: 5,
-      tags: ['blog', 'page', 'post'],
-    },
+    cache: 'no-cache',
   }).then(async (res) => {
     const data = await res.json();
     return data.data as (Post & { author: { name: string; email: string } })[];
@@ -29,8 +26,8 @@ async function getPostsBySlug(searchParams?: Record<string, any>) {
 export const metadata: Metadata = {
   title: 'My blogs',
 };
-async function ProfileBlogs({ searchParams }: Props) {
-  const blogs = await getPostsBySlug();
+async function ProfileBlogs({}: Props) {
+  const blogs = await getMyPosts();
   return (
     <div className="">
       <MainNavbar items={mainNav} />
