@@ -51,7 +51,7 @@ function UserDropdown() {
       >
         <DropdownSection aria-label={'actions'} showDivider>
           <DropdownItem
-            startContent={<Icons.plus className="w-4 h-4" />}
+            startContent={<Icons.plusSquare className="w-4 h-4" />}
             color="success"
             as={Link}
             className="data-[hover=true]:bg-success-100/70 data-[hover]:text-success-600"

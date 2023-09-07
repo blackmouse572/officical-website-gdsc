@@ -4,7 +4,9 @@ import MainNavbar from '@components/navbar';
 import { absoluteUrl } from '@lib/helper';
 import { Button } from '@nextui-org/button';
 import { Card, CardFooter } from '@nextui-org/card';
+import { Divider } from '@nextui-org/divider';
 import { Image } from '@nextui-org/image';
+import { Input } from '@nextui-org/input';
 import { Tooltip } from '@nextui-org/tooltip';
 import { Post } from '@prisma/client';
 import { Metadata } from 'next';
@@ -36,23 +38,24 @@ async function ProfileBlogs({}: Props) {
       <main className="container mx-auto py-4">
         <div className="flex items-center justify-between">
           <h3 className="text-3xl font-bold">My blogs</h3>
-          <Button
-            color="success"
-            variant="solid"
-            className="flex items-center space-x-2 text-success-50"
-            as={Link}
-            href={'/editor'}
-          >
-            <Icons.plus className="w-5 h-5" />
-            <span>New blog</span>
-          </Button>
+          <div className="flex gap-2 items-center">
+            <Button color="success" variant="solid" className="text-success-50" as={Link} href={'/editor'} isIconOnly>
+              <Icons.plus className="w-5 h-5" />
+            </Button>
+            <Divider orientation="vertical" className="h-5" />
+            <Input
+              placeholder="Search"
+              startContent={<Icons.search className="w-5 h-5 text-stone-500" />}
+              variant="faded"
+            />
+          </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-8">
           {blogs?.map((blog) => {
             return (
               <Card key={blog.id} className="w-full" shadow="sm" isFooterBlurred>
                 <Image src={blog.ogImage || ''} alt={blog.title} className="aspect-video object-cover" />
-                <CardFooter className="space-x-2 absolute border-1 bottom-1 z-10 ml-1 shadow-sm border-white/20 bg-white/20 rounded-full  w-[calc(100%_-_8px)] backdrop-blur-sm">
+                <CardFooter className="absolute border-1 bottom-1 z-10 ml-1 shadow-sm border-white/20 bg-white/20 rounded-full  w-[calc(100%_-_8px)] backdrop-blur-sm">
                   <Link href={`/blog/${blog.slug}`}>
                     <Button color="primary" isIconOnly variant="light">
                       <Icons.eye className="w-5 h-5 cursor-pointer" />
