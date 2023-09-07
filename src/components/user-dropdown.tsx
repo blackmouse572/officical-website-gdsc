@@ -1,3 +1,4 @@
+import LogoutButton from '@components/logout-button';
 import { Dropdown, DropdownItem, DropdownMenu, DropdownSection, DropdownTrigger, User } from '@nextui-org/react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
@@ -53,6 +54,7 @@ function UserDropdown() {
             startContent={<Icons.plus className="w-4 h-4" />}
             color="success"
             as={Link}
+            className="data-[hover=true]:bg-success-100/70 data-[hover]:text-success-600"
             //@ts-ignore
             href="/editor"
           >
@@ -73,15 +75,8 @@ function UserDropdown() {
           ))}
         </DropdownSection>
         <DropdownSection aria-label={'sign-out'}>
-          <DropdownItem
-            className="text-danger-500 font-medium hover:text-danger-500 "
-            startContent={<Icons.signOut className="w-4 h-4" />}
-            color="danger"
-            classNames={{
-              wrapper: 'hover:bg-danger-50',
-            }}
-          >
-            Sign out
+          <DropdownItem className="text-danger-500 font-medium hover:bg-transparent data-[hover=true]:bg-transparent data-[hover=true]:ring-transparent data-[hover=true]:outline-none data-[focus-visible=true]:ring-transparent data-[hover=true]:border-0">
+            <LogoutButton variant="flat" size={'sm'} className="w-full m-0" />
           </DropdownItem>
         </DropdownSection>
       </DropdownMenu>
