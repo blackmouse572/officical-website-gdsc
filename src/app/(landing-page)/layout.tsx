@@ -8,10 +8,10 @@ type Props = {
 
 function MainLayout({ children }: Props) {
   return (
-    <main>
+    <main className="min-h-screen">
       <MainNavbar items={mainNav} />
 
-      <section>{children}</section>
+      <section className="">{children}</section>
     </main>
   );
 }
