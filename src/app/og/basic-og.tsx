@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 import Logo from '@/app/og/logo';
 import clsx from 'clsx';
 
