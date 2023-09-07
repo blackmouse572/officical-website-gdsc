@@ -12,12 +12,9 @@ type Props = {
   searchParams: { [key: string]: string | string[] | undefined };
 };
 
-async function getPostsBySlug(searchParams?: Record<string, any>) {
+async function getPostsBySlug() {
   const res = await fetch(absoluteUrl(`/api/blog`), {
-    next: {
-      revalidate: 5,
-      tags: ['blog', 'page', 'post'],
-    },
+    cache: 'no-cache',
   }).then(async (res) => {
     const data = await res.json();
     return data.data as (Post & { author: { name: string; email: string } })[];
