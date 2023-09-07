@@ -69,7 +69,7 @@ function MainNavbar({ items, children }: Props) {
               <LoginButton variant="flat" />
             </NavbarItem>
             <NavbarItem className="relative group">
-              <BecomeAMemberButton />
+              <BecomeAMemberButton withSparkles />
             </NavbarItem>
           </>
         )}
