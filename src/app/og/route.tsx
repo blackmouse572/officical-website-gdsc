@@ -1,4 +1,4 @@
-import { absoluteUrl } from '@lib/helper';
+import BasicOgImage from '@/app/og/basic-og';
 import { ImageResponse, NextRequest } from 'next/server';
 
 export const runtime = 'edge';
@@ -6,14 +6,6 @@ export const runtime = 'edge';
 export async function GET(req: NextRequest) {
   const { searchParams } = req.nextUrl;
   const postTitle = searchParams.get('title');
-  const backgroundSlot = searchParams.get('slot');
-
-  const font = fetch(new URL('../../../public/fonts/KaiseiTokumin-Bold.ttf', import.meta.url)).then((res) =>
-    res.arrayBuffer()
-  );
-  const fontData = await font;
-  const slot = backgroundSlot ? backgroundSlot : 1;
-  const backgroundUrl = absoluteUrl(`images/og_bg_${slot}.png`);
 
   return new ImageResponse(
     (
@@ -25,25 +17,9 @@ export async function GET(req: NextRequest) {
           flexDirection: 'column',
           alignItems: 'flex-start',
           justifyContent: 'center',
-          backgroundImage: `url(${backgroundUrl})`,
         }}
       >
-        <div
-          style={{
-            marginLeft: 190,
-            marginRight: 190,
-            display: 'flex',
-            fontSize: 130,
-            fontFamily: 'Kaisei Tokumin',
-            letterSpacing: '-0.05em',
-            fontStyle: 'normal',
-            color: 'white',
-            lineHeight: '120px',
-            whiteSpace: 'pre-wrap',
-          }}
-        >
-          {postTitle}
-        </div>
+        <BasicOgImage title={postTitle} />
       </div>
     ),
     {
@@ -51,11 +27,28 @@ export async function GET(req: NextRequest) {
       height: 1080,
       fonts: [
         {
+          name: 'Poppins',
+          data: await getPopinsFont(),
+          style: 'normal',
+        },
+        {
           name: 'Kaisei Tokumin',
-          data: fontData,
+          data: await getKaiseiFont(),
           style: 'normal',
         },
       ],
     }
   );
+}
+
+async function getPopinsFont() {
+  const res = await fetch(new URL('../../../public/fonts/SVN-Poppins-Bold.ttf', import.meta.url));
+  const font = await res.arrayBuffer();
+  return font;
+}
+
+async function getKaiseiFont() {
+  const res = await fetch(new URL('../../../public/fonts/KaiseiTokumin-Bold.woff', import.meta.url));
+  const font = await res.arrayBuffer();
+  return font;
 }

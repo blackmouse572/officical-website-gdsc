@@ -14,6 +14,7 @@ export const env = createEnv({
     FIREBASE_PRIVATE_KEY: z.string().min(1),
     FIREBASE_CLIENT_EMAIL: z.string().min(1),
     NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET: z.string().min(1),
+    NODE_ENV: z.string().min(1).default('development'),
   },
   client: {
     FIREBASE_API_KEY: z.string().min(1),
@@ -22,6 +23,7 @@ export const env = createEnv({
     FIREBASE_STORAGE_BUCKET: z.string().min(1),
     FIREBASE_MESSAGING_SENDER_ID: z.string().min(1),
     NEXT_PUBLIC_APP_URL: z.string().min(1),
+    NODE_ENV: z.string().min(1).default('development'),
   },
   runtimeEnv: {
     NEXTAUTH_URL: process.env.NEXTAUTH_URL,
@@ -39,5 +41,6 @@ export const env = createEnv({
     FIREBASE_CLIENT_EMAIL: process.env.FIREBASE_CLIENT_EMAIL,
     FIREBASE_PRIVATE_KEY: process.env.FIREBASE_PRIVATE_KEY,
     NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+    NODE_ENV: process.env.NODE_ENV,
   },
 });
