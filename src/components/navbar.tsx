@@ -1,5 +1,6 @@
 'use client';
-import { Button, Navbar, NavbarBrand, NavbarContent, NavbarItem } from '@nextui-org/react';
+import BecomeAMemberButton from '@components/become-member-button';
+import { Navbar, NavbarBrand, NavbarContent, NavbarItem } from '@nextui-org/react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useSelectedLayoutSegment } from 'next/navigation';
@@ -48,12 +49,10 @@ function MainNavbar({ items, children }: Props) {
         ) : (
           <>
             <NavbarItem className="hidden lg:flex font-medium">
-              <LoginButton />
+              <LoginButton variant="flat" />
             </NavbarItem>
-            <NavbarItem>
-              <Button as={Link} color="primary" href="#" variant="ghost">
-                Sign Up
-              </Button>
+            <NavbarItem className="relative group">
+              <BecomeAMemberButton />
             </NavbarItem>
           </>
         )}
