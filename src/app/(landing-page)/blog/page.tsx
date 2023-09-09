@@ -1,24 +1,29 @@
-import { allBlogs } from '.contentlayer/generated';
 import HorizontalBlogView from '@components/horizontal-blog-view';
 import NewsDisplayer from '@components/news-displayer';
 import VericalBlogView from '@components/vertical-blog-view';
+import { absoluteUrl } from '@lib/helper';
 import { Divider } from '@nextui-org/divider';
-import { compareDesc, parseISO } from 'date-fns';
+import { Post, User } from '@prisma/client';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'Blogs',
 };
 
-function BlogPage() {
-  const posts = allBlogs
-    .filter((post) => post.date)
-    .sort((a, b) => {
-      return compareDesc(parseISO(a.date), parseISO(b.date));
-    });
+async function getPosts() {
+  const res = await fetch(absoluteUrl(`/api/blog`), {}).then(async (res) => {
+    const data = await res.json();
+    return data.data as (Post & { author: Pick<User, 'id' | 'name' | 'image'> })[];
+  });
+
+  return res;
+}
+
+async function BlogPage() {
+  const posts = await getPosts();
   return (
     <main className="flex min-h-screen flex-col items-center justify-center space-y-4 container mx-auto">
-      <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-2">
         <NewsDisplayer
           className="col-span-2"
           header={{

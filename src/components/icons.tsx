@@ -5,7 +5,6 @@ import {
   Check,
   ChevronLeft,
   ChevronRight,
-  Command,
   CreditCard,
   DotIcon,
   EyeIcon,
@@ -25,8 +24,11 @@ import {
   PencilIcon,
   Pizza,
   Plus,
+  PlusIcon,
   PlusSquareIcon,
+  SearchIcon,
   Settings,
+  SparkleIcon,
   SunMedium,
   Trash,
   Twitter,
@@ -39,11 +41,52 @@ export type Icon = LucideIcon;
 
 export const Icons = {
   pen: PencilIcon,
-  logo: Command,
+  logo: ({ ...props }: LucideProps) => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      data-name="Layer 1"
+      viewBox="0 0 307.05 148.56"
+      width={'2rem'}
+      height={'2rem'}
+      {...props}
+    >
+      <path
+        d="m879.29 960 49.86-28.79a24.53 24.53 0 1 0-24.54-42.49l-86.15 49.74Z"
+        style={{
+          fill: '#fd2b25',
+        }}
+        transform="translate(-806.19 -885.44)"
+      />
+      <path
+        d="M916.86 1034a24.54 24.54 0 0 0 12.29-45.79L843 938.47A24.53 24.53 0 1 0 818.46 981l86.15 49.75a24.47 24.47 0 0 0 12.25 3.25Z"
+        style={{
+          fill: '#1f86fb',
+        }}
+        transform="translate(-806.19 -885.44)"
+      />
+      <path
+        d="M1002.56 1034a24.41 24.41 0 0 0 12.24-3.29L1101 981l-60.06-22-50.63 29.23a24.54 24.54 0 0 0 12.29 45.79Z"
+        style={{
+          fill: '#ffb800',
+        }}
+        transform="translate(-806.19 -885.44)"
+      />
+      <path
+        d="M1088.67 984.25a24.53 24.53 0 0 0 12.33-45.78l-86.16-49.74a24.53 24.53 0 1 0-24.53 42.49l86.12 49.78a24.41 24.41 0 0 0 12.24 3.25Z"
+        style={{
+          fill: '#00aa47',
+        }}
+        transform="translate(-806.19 -885.44)"
+      />
+    </svg>
+  ),
   close: X,
+  send: ForwardIcon,
+  sparkle: SparkleIcon,
   share: ForwardIcon,
   chevronLeft: ChevronLeft,
-  plus: PlusSquareIcon,
+  plusSquare: PlusSquareIcon,
+  plus: PlusIcon,
   chevronRight: ChevronRight,
   trash: Trash,
   eye: EyeIcon,
@@ -66,6 +109,7 @@ export const Icons = {
   pizza: Pizza,
   sun: SunMedium,
   moon: Moon,
+  search: SearchIcon,
   laptop: Laptop,
   signOut: LogOutIcon,
   gitHub: ({ ...props }: LucideProps) => (

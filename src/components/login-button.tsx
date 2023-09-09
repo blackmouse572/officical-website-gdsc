@@ -1,11 +1,12 @@
-import { Button } from '@nextui-org/react';
+'use client';
+import { Button, ButtonProps } from '@nextui-org/react';
 import { signIn } from 'next-auth/react';
 
-type Props = {};
+type Props = ButtonProps;
 
-function LoginButton({}: Props) {
+function LoginButton({ ...props }: Props) {
   return (
-    <Button variant="ghost" onClick={() => signIn('github')}>
+    <Button variant="ghost" onClick={() => signIn('github')} {...props}>
       Sign In
     </Button>
   );

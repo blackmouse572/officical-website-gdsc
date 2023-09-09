@@ -11,8 +11,8 @@ const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   icons: {
-    icon: 'images/small-logo.webp',
-    apple: 'images/small-logo.webp',
+    icon: siteConfig.og.icon,
+    apple: siteConfig.og.icon,
   },
   title: {
     default: 'GDSC FPTU DN',
@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     },
   ],
   category: 'Technology',
-  manifest: `${siteConfig.url}site.webmanifest`,
+  manifest: `/site.webmanifest`,
   keywords: [
     'GDSC',
     'FPTU',

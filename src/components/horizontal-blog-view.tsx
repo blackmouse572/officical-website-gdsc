@@ -1,36 +1,35 @@
+import { generateOgImage } from '@lib/helper';
 import { Card, CardBody } from '@nextui-org/card';
 import { Image } from '@nextui-org/image';
 import { Link as NextLink } from '@nextui-org/link';
-import { Blogs, allAuthors } from 'contentlayer/generated';
-import { formatDistanceToNow, parseISO } from 'date-fns';
+import { Post, User } from '@prisma/client';
+import { formatDistanceToNow } from 'date-fns';
 import vn from 'date-fns/locale/vi';
 import { Icons } from './icons';
 type HorizontalBlogViewProps = {
-  blog: Blogs;
+  blog: Post & {
+    author: Pick<User, 'id' | 'name' | 'image'>;
+  };
   isWithImage?: boolean;
   isWithDescription?: boolean;
 } & React.ComponentProps<typeof Card> & {
     children?: never;
   };
 
-function getAuthorByPost(post: Blogs) {
-  return allAuthors.find((author) => author.name === post.author);
-}
-
 function HorizontalBlogView({ blog, className, isWithImage, isWithDescription, ...props }: HorizontalBlogViewProps) {
-  const author = getAuthorByPost(blog);
-  const timeDistance = formatDistanceToNow(parseISO(blog.date), {
+  const timeDistance = formatDistanceToNow(new Date(blog.createdAt), {
     addSuffix: true,
     locale: vn,
   });
+
   return (
-    <Card shadow="none" isPressable className="group" {...props}>
+    <Card shadow="none" className="w-full" {...props}>
       <CardBody>
         <section className="flex gap-2">
           {isWithImage && (
             <div className="relative aspect-square">
               <Image
-                src={blog.coverImage}
+                src={blog.ogImage || generateOgImage(blog.title)}
                 alt={blog.title}
                 className="aspect-square object-cover md:max-w-[4rem]"
                 width={300}
@@ -38,7 +37,14 @@ function HorizontalBlogView({ blog, className, isWithImage, isWithDescription, .
             </div>
           )}
           <div className="">
-            <h3 className="font-medium group-hover:underline  text-base">{blog.title}</h3>
+            <NextLink
+              color={'foreground'}
+              href={`/blog/${blog.slug}`}
+              className="font-medium text-base"
+              underline="hover"
+            >
+              {blog.title}
+            </NextLink>
 
             {isWithDescription && <p className="text-gray-800 md:text-sm text-xs line-clamp-2">{blog.description}</p>}
 
@@ -47,8 +53,8 @@ function HorizontalBlogView({ blog, className, isWithImage, isWithDescription, .
               <Icons.dot className="text-gray-500" size={12} />
               <p className="text-gray-500 text-xs">
                 by &nbsp;
-                <NextLink href={`${author?.slug}`} className="text-blue-500 text-xs">
-                  {author?.name}
+                <NextLink href={`${blog.author?.id}`} className="text-blue-500 text-xs">
+                  {blog.author?.name}
                 </NextLink>
               </p>
             </div>

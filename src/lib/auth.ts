@@ -1,9 +1,9 @@
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
 import { NextAuthOptions, Session, getServerSession } from 'next-auth';
-import GitHubProvider from 'next-auth/providers/github';
+import CredentialsProvider from 'next-auth/providers/credentials';
 
 import { db } from '@/lib/db';
-import { env } from '@env';
+import { isPasswordValid } from '@lib/hashHelper';
 import { ROLE } from '@prisma/client';
 
 export const authOptions: NextAuthOptions = {
@@ -12,12 +12,36 @@ export const authOptions: NextAuthOptions = {
     strategy: 'jwt',
   },
   pages: {
-    signIn: '/login',
+    signIn: '/auth/login',
   },
   providers: [
-    GitHubProvider({
-      clientId: env.GITHUB_CLIENT_ID,
-      clientSecret: env.GITHUB_CLIENT_SECRET,
+    CredentialsProvider({
+      name: 'Credentials',
+      credentials: {
+        email: { label: 'Email', type: 'text', placeholder: 'jsmith' },
+        password: { label: 'Password', type: 'password' },
+      },
+      async authorize(credentials, req) {
+        if (!credentials) return null;
+        const user = await db.user.findFirst({
+          where: {
+            email: credentials.email,
+          },
+        });
+
+        if (!user) return null;
+
+        const isValid = isPasswordValid(credentials.password, user.password);
+        if (!isValid) return null;
+
+        return {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+          picture: user.image,
+        };
+      },
     }),
   ],
   callbacks: {
