@@ -18,14 +18,14 @@ export const authOptions: NextAuthOptions = {
     CredentialsProvider({
       name: 'Credentials',
       credentials: {
-        username: { label: 'Username', type: 'text', placeholder: 'jsmith' },
+        email: { label: 'Email', type: 'text', placeholder: 'jsmith' },
         password: { label: 'Password', type: 'password' },
       },
-      async authorize(credentials) {
+      async authorize(credentials, req) {
         if (!credentials) return null;
         const user = await db.user.findFirst({
           where: {
-            email: credentials.username,
+            email: credentials.email,
           },
         });
 
@@ -45,22 +45,6 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    async signIn({ account, user, profile, email, credentials }) {
-      let isAllowedToSignIn: boolean = false;
-      if (account?.provider === 'github') {
-        //User must be in the database (aka. has added by admin)
-        const dbUser = await db.account.findFirst({
-          where: {
-            userId: user.id,
-          },
-        });
-
-        if (dbUser) {
-          isAllowedToSignIn = true;
-        }
-      }
-      return isAllowedToSignIn;
-    },
     async session({ token, session }) {
       if (token) {
         session.user.id = token.id;

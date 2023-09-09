@@ -4,6 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from '@hooks/useToast';
 import { Button, Input } from '@nextui-org/react';
 import { signIn } from 'next-auth/react';
+import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -27,6 +28,7 @@ const LoginSchema = z.object({
 });
 type LoginData = z.infer<typeof LoginSchema>;
 function LoginForm({ defaultValues }: Props) {
+  const searchParams = useSearchParams();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { register, formState, handleSubmit } = useForm<LoginData>({
     resolver: zodResolver(LoginSchema),
@@ -35,24 +37,29 @@ function LoginForm({ defaultValues }: Props) {
     },
   });
 
-  const onSubmit = (data: LoginData) => {
+  const onSubmit = async (data: LoginData) => {
     setIsSubmitting(true);
-    signIn('Credentials', {
+    const result = await signIn('credentials', {
       email: data.email,
       password: data.password,
-      redirect: false,
-    })
-      .catch((err) => {
-        console.error(err);
-        toast({
-          variant: 'danger',
-          title: 'Login failed',
-          description: err.message,
-        });
-      })
-      .finally(() => {
-        setIsSubmitting(false);
+      callbackUrl: searchParams?.get('from') || '/',
+    }).finally(() => {
+      setIsSubmitting(false);
+    });
+
+    if (result?.ok) {
+      toast({
+        variant: 'success',
+        title: 'Success',
+        description: 'Logged in successfully',
       });
+    } else {
+      toast({
+        variant: 'danger',
+        title: 'Error',
+        description: 'Invalid credentials',
+      });
+    }
   };
 
   return (

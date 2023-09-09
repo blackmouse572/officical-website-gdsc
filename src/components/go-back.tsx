@@ -3,12 +3,14 @@ import { Icons } from '@components/icons';
 import { Button, ButtonProps } from '@nextui-org/react';
 import { useRouter } from 'next/navigation';
 
-type Props = ButtonProps;
+type Props = ButtonProps & {
+  href?: string;
+};
 
-function GoBackButton({ ...props }: Props) {
+function GoBackButton({ href, ...props }: Props) {
   const router = useRouter();
   const goBack = () => {
-    router.back();
+    href ? router.push(href) : router.back();
   };
   return (
     <Button variant="flat" onClick={goBack} {...props}>

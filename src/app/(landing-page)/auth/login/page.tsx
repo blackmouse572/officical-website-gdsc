@@ -1,3 +1,4 @@
+import GoBackButton from '@components/go-back';
 import LoginForm from '@components/login-form';
 import { Divider } from '@nextui-org/divider';
 import { Metadata } from 'next';
@@ -15,9 +16,10 @@ function LoginPage({ searchParams }: Props) {
   return (
     <div
       className="container mx-auto gap-5 grid h-[calc(100vh-4.5rem)]
-      md:grid-cols-[minmax(0,1fr),minmax(0,1fr)]
+      lg:grid-cols-[minmax(0,1fr),minmax(0,1fr)] relative
     "
     >
+      <GoBackButton className="fixed top-20 left-10" href="/" />
       <section className="h-full flex justify-center items-center">
         <div className="space-y-4">
           <div>
@@ -39,8 +41,8 @@ function LoginPage({ searchParams }: Props) {
           </div>
         </div>
       </section>
-      <section className="relative w-full h-full hidden md:block">
-        <Image src={'/images/recap.jpg'} fill alt={'recap image'} objectFit="cover" />
+      <section className="relative w-full h-full hidden lg:block">
+        <Image src={'/images/recap.jpg'} fill alt={'recap image'} className="object-contain" />
         {/* Image */}
       </section>
     </div>
