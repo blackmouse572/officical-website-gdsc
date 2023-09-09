@@ -35,7 +35,9 @@ export default function Home() {
                 Lorem ipsum dolor sit amet consectetur adipisicing <span className="text-rose-300">GDSC</span>.
               </h1>
               <Spacer y={8} />
-              <BecomeAMemberButton size="lg" />
+              <div className="min-h-unit-24">
+                <BecomeAMemberButton size="lg" />
+              </div>
               <Spacer y={52} />
             </div>
           </div>
