@@ -23,6 +23,7 @@ const config: Config = {
     }),
     require('tailwindcss-animate'),
     require('@tailwindcss/typography'),
+    require('tailwindcss-hero-patterns'),
   ],
 };
 export default config;
