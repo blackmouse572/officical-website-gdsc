@@ -1,9 +1,9 @@
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
 import { NextAuthOptions, Session, getServerSession } from 'next-auth';
-import GitHubProvider from 'next-auth/providers/github';
+import CredentialsProvider from 'next-auth/providers/credentials';
 
 import { db } from '@/lib/db';
-import { env } from '@env';
+import { isPasswordValid } from '@lib/hashHelper';
 import { ROLE } from '@prisma/client';
 
 export const authOptions: NextAuthOptions = {
@@ -12,15 +12,55 @@ export const authOptions: NextAuthOptions = {
     strategy: 'jwt',
   },
   pages: {
-    signIn: '/login',
+    signIn: '/auth/login',
   },
   providers: [
-    GitHubProvider({
-      clientId: env.GITHUB_CLIENT_ID,
-      clientSecret: env.GITHUB_CLIENT_SECRET,
+    CredentialsProvider({
+      name: 'Credentials',
+      credentials: {
+        username: { label: 'Username', type: 'text', placeholder: 'jsmith' },
+        password: { label: 'Password', type: 'password' },
+      },
+      async authorize(credentials) {
+        if (!credentials) return null;
+        const user = await db.user.findFirst({
+          where: {
+            email: credentials.username,
+          },
+        });
+
+        if (!user) return null;
+
+        const isValid = isPasswordValid(credentials.password, user.password);
+        if (!isValid) return null;
+
+        return {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+          picture: user.image,
+        };
+      },
     }),
   ],
   callbacks: {
+    async signIn({ account, user, profile, email, credentials }) {
+      let isAllowedToSignIn: boolean = false;
+      if (account?.provider === 'github') {
+        //User must be in the database (aka. has added by admin)
+        const dbUser = await db.account.findFirst({
+          where: {
+            userId: user.id,
+          },
+        });
+
+        if (dbUser) {
+          isAllowedToSignIn = true;
+        }
+      }
+      return isAllowedToSignIn;
+    },
     async session({ token, session }) {
       if (token) {
         session.user.id = token.id;

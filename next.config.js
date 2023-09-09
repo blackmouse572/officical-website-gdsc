@@ -1,10 +1,11 @@
 const { createContentlayerPlugin } = require('next-contentlayer');
+const bcrypt = require('bcrypt');
 
 /** @type {import('next').NextConfig} */
 const config = {
   reactStrictMode: true,
   experimental: {
-    serverComponentsExternalPackages: ['@prisma/client'],
+    serverComponentsExternalPackages: ['@prisma/client', 'bcrypt'],
   },
   images: {
     remotePatterns: [

@@ -1,14 +1,14 @@
-import { env } from 'process';
+import { env } from '@env';
 import { NavItem } from '../types';
 
 export const siteConfig = {
-  url: env.NEXTAUTH_URL,
+  url: env.NEXT_PUBLIC_APP_URL,
   title: 'My Blog',
   subtitle: 'This is my personal blog',
   description: 'This is my personal blog',
   name: 'My Blog',
   og: {
-    image: 'http://localhost:3000/og?title=GDSC',
+    image: env.NEXT_PUBLIC_APP_URL + '/og/title=GDSC',
     title: 'GDSC',
     description: 'GDSC',
     icon: '/images/small-logo.webp',
