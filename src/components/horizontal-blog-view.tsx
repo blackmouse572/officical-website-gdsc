@@ -1,6 +1,7 @@
 import { generateOgImage } from '@lib/helper';
 import { Card, CardBody } from '@nextui-org/card';
 import { Image } from '@nextui-org/image';
+import NextImage from 'next/image';
 import { Link as NextLink } from '@nextui-org/link';
 import { Post, User } from '@prisma/client';
 import { formatDistanceToNow } from 'date-fns';
@@ -31,6 +32,7 @@ function HorizontalBlogView({ blog, className, isWithImage, isWithDescription, .
               <Image
                 src={blog.ogImage || generateOgImage(blog.title)}
                 alt={blog.title}
+                as={NextImage}
                 className="aspect-square object-cover md:max-w-[4rem]"
                 width={300}
               />
