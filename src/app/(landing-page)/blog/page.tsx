@@ -11,10 +11,27 @@ export const metadata: Metadata = {
 };
 
 async function getPosts() {
-  const res = await fetch(absoluteUrl(`/api/blog`), {}).then(async (res) => {
-    const data = await res.json();
-    return data.data as (Post & { author: Pick<User, 'id' | 'name' | 'image'> })[];
+  const params = new URLSearchParams({
+    published: 'true',
   });
+  const url = absoluteUrl(`/api/blog?${params.toString()}`);
+  const res = await fetch(url, {
+    next: {
+      revalidate: 60,
+      tags: ['blog'],
+    },
+    method: 'GET',
+  })
+    .then(async (res) => {
+      if (!res.ok) {
+        console.log('Error when fetching posts', res);
+      }
+      const data = await res.json();
+      return data.data as (Post & { author: Pick<User, 'id' | 'name' | 'image'> })[];
+    })
+    .catch((e) => {
+      return [];
+    });
 
   return res;
 }
@@ -23,6 +40,7 @@ async function BlogPage() {
   const posts = await getPosts();
   return (
     <main className="flex min-h-screen flex-col items-center justify-center space-y-4 container mx-auto">
+      <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-2">
       <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-2">
         <NewsDisplayer
           className="col-span-2"
@@ -34,12 +52,12 @@ async function BlogPage() {
           <div className="grid grid-cols-[40%_60%] gap-2">
             <div className="">
               {posts.map((post) => {
-                return <VericalBlogView key={post.slug} isWithDescription isWithImage blog={post} />;
+                return <VericalBlogView key={post.slug + 'vertical'} isWithDescription isWithImage blog={post} />;
               })}
             </div>
             <div className="">
               {posts.map((post) => {
-                return <HorizontalBlogView key={post.slug} blog={post} />;
+                return <HorizontalBlogView key={post.slug + 'horizontal'} blog={post} />;
               })}
             </div>
           </div>
@@ -54,7 +72,7 @@ async function BlogPage() {
             {posts.map((post) => {
               return (
                 <>
-                  <HorizontalBlogView key={post.slug} blog={post} isWithImage />
+                  <HorizontalBlogView key={post.slug + 'side-horizontal'} blog={post} isWithImage />
                   <Divider />
                 </>
               );
