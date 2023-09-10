@@ -66,7 +66,7 @@ async function BlogRenderer({ blog }: Props) {
         height={630}
         isBlurred
         classNames={{
-          blurredImg: 'offset-2',
+          blurredImg: ['translate-y-[-10%]'],
         }}
       />
       <Blocks data={data} />

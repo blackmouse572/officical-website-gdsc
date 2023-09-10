@@ -23,6 +23,7 @@ function VericalBlogView({ blog, ...props }: Props) {
           src={blog.ogImage || generateOgImage(blog.title)}
           alt={blog.title}
           width={300}
+          height={200}
           as={NextImage}
           className="aspect-video"
         />
