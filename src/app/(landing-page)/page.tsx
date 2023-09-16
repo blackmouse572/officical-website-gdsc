@@ -1,9 +1,11 @@
 'use client';
 import BecomeAMemberButton from '@components/become-member-button';
 import { Icons } from '@components/icons';
+import HeroElements from '@components/landing-page/hero-elements';
 import { Image } from '@nextui-org/image';
 import { Button, Card, CardBody } from '@nextui-org/react';
 import { Spacer } from '@nextui-org/spacer';
+import NextImage from 'next/image';
 
 const ban = [
   {
@@ -25,26 +27,33 @@ const ban = [
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between bg-gradient-to-br from-purple-800 to-black from-0% to-85%">
-      <section className="min-h-screen w-full bg-no-repeat bg-cover flex justify-center items-center relative">
-        <div>
+    <main className="flex min-h-screen flex-col items-center justify-between ">
+      <section className="min-h-screen w-full flex justify-center items-center relative bg-[url('/images/background_light_01.png')] bg-cover origin-center bg-no-repeat text-white">
+        <div className="z-10">
           <div className="h-[60vh]">
             <Spacer y={24} />
             <div className="w-full h-full flex flex-col justify-center items-center">
-              <h1 className="text-4xl md:text-6xl font-bold text-center w-4/5 text-white leading-relaxed mx-auto">
-                Lorem ipsum dolor sit amet consectetur adipisicing <span className="text-rose-300">GDSC</span>.
-              </h1>
+              <NextImage
+                src={'/images/logo_white_short.png'}
+                alt={'gdsc logo'}
+                width={500}
+                height={500}
+                className="mx-auto object-cover origin-center"
+                // as={NextImage}
+                priority={true}
+              />
               <Spacer y={8} />
-              <div className="min-h-unit-24">
-                <BecomeAMemberButton size="lg" />
+              <div className="min-h-unit-24 relative">
+                <BecomeAMemberButton withSparkles size="lg" />
               </div>
+              <HeroElements />
               <Spacer y={52} />
             </div>
           </div>
           <Image
             src={'/images/recap.jpg'}
             alt={'recap image'}
-            className="max-w-3xl mx-auto"
+            className="w-[80vw] md:w-fit max-w-none md:max-w-full"
             classNames={{
               wrapper: [
                 'mx-auto',
@@ -55,6 +64,8 @@ export default function Home() {
                 '-translate-x-1/2',
                 'translate-y-1/2',
                 'z-10',
+                'max-w-xl',
+                'w-full',
               ],
             }}
           />
