@@ -3,11 +3,12 @@ import { getSessionServerSide } from '@lib/auth';
 import { estimateReadingTimeByContent, generateOgImage } from '@lib/helper';
 import { Button } from '@nextui-org/button';
 import { Divider } from '@nextui-org/divider';
+import { Image } from '@nextui-org/image';
 import { User as UserDisplay } from '@nextui-org/user';
 import { Post, User } from '@prisma/client';
 import { format } from 'date-fns';
 import Blocks, { DataProp } from 'editorjs-blocks-react-renderer';
-import Image from 'next/image';
+import NextImage from 'next/image';
 import Link from 'next/link';
 
 type Props = {
@@ -58,18 +59,21 @@ async function BlogRenderer({ blog }: Props) {
       />
       <p className="text-stone-500 border-l-2 pl-4">{blog.description}</p>
       <Image
+        as={NextImage}
         src={blog.ogImage || generateOgImage(blog.title)}
         alt={blog.title}
         width={1200}
         height={630}
-        className="rounded-md object-contain"
-        blurDataURL={generateOgImage(blog.title)}
+        isBlurred
+        classNames={{
+          blurredImg: ['translate-y-[-10%]'],
+        }}
       />
       <Blocks data={data} />
       {blog.author?.email === user?.user.email && (
         <>
           <Divider />
-          <Link href={`/editor/${blog.slug}`}>
+          <Link href={`/blog/${blog.slug}/edit`}>
             <Button color="primary" variant="flat" startContent={<Icons.pen className="w-4 h-4" />}>
               Edit
             </Button>

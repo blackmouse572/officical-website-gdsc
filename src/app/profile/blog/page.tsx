@@ -10,6 +10,7 @@ import { Input } from '@nextui-org/input';
 import { Tooltip } from '@nextui-org/tooltip';
 import { Post } from '@prisma/client';
 import { Metadata } from 'next';
+import NextImage from 'next/image';
 import Link from 'next/link';
 export const dynamic = 'force-dynamic';
 type Props = {
@@ -55,6 +56,7 @@ async function ProfileBlogs({}: Props) {
             return (
               <Card key={blog.id} className="w-full" shadow="sm" isFooterBlurred>
                 <Image
+                  as={NextImage}
                   src={blog.ogImage || generateOgImage(blog.title)}
                   alt={blog.title}
                   className="aspect-video object-cover"

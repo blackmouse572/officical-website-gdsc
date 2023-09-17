@@ -1,8 +1,10 @@
-import { DEFAULT_SALT_ROUNDS } from '@/app/api/admin/users/constraints';
+import { DEFAULT_ALLOWED_CREATE_POSTS, DEFAULT_SALT_ROUNDS } from '@/app/api/admin/users/constraints';
 import { badRequestResponse, createdResponse, unAuthroizedResponse } from '@/app/api/api-helper';
 import { RegisterSchema } from '@/validations/auth.validator';
+import { getSessionServerSide } from '@lib/auth';
 import { db } from '@lib/db';
 import { genSalt, hashPassword } from '@lib/hashHelper';
+import { User } from '@prisma/client';
 import { NextRequest } from 'next/server';
 
 export async function POST(req: NextRequest) {
@@ -10,7 +12,8 @@ export async function POST(req: NextRequest) {
   const { name, email, password: rawPassword, role, image } = RegisterSchema.parse(json);
 
   // TODO: check if user is authenticated and is operator
-  const isAllowedToCreate = true;
+  const session = await getSessionServerSide();
+  const isAllowedToCreate = checkAllowToCreate(session?.user);
 
   if (!isAllowedToCreate) {
     return unAuthroizedResponse;
@@ -45,4 +48,11 @@ export async function POST(req: NextRequest) {
   return createdResponse({
     data: newUser,
   });
+}
+
+function checkAllowToCreate(user: Pick<User, 'role'> | undefined) {
+  if (!user) {
+    return false;
+  }
+  return DEFAULT_ALLOWED_CREATE_POSTS.includes(user.role);
 }

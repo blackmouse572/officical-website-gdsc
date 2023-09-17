@@ -4,6 +4,7 @@ import { Image } from '@nextui-org/image';
 import { Link as NextLink } from '@nextui-org/link';
 import formatDistanceToNow from 'date-fns/formatDistanceToNow';
 import vn from 'date-fns/locale/vi';
+import NextImage from 'next/image';
 import { TextBlogViewProps } from './horizontal-blog-view';
 import { Icons } from './icons';
 
@@ -22,6 +23,8 @@ function VericalBlogView({ blog, ...props }: Props) {
           src={blog.ogImage || generateOgImage(blog.title)}
           alt={blog.title}
           width={300}
+          height={200}
+          as={NextImage}
           className="aspect-video"
         />
         <h3 className="mt-1">

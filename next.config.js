@@ -19,8 +19,13 @@ const config = {
         protocol: 'http',
         pathname: '/**/*',
       },
+      {
+        hostname: 'gdsc-fptudn.vercel.app',
+        protocol: 'https',
+        pathname: '/**/*',
+      },
     ],
-    domains: ['images.unsplash.com', 'localhost'],
+    domains: ['images.unsplash.com', 'localhost', 'gdsc-fptudn.vercel.app'],
   },
 };
 

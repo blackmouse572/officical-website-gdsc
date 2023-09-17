@@ -5,6 +5,7 @@ import { Link as NextLink } from '@nextui-org/link';
 import { Post, User } from '@prisma/client';
 import { formatDistanceToNow } from 'date-fns';
 import vn from 'date-fns/locale/vi';
+import NextImage from 'next/image';
 import { Icons } from './icons';
 type HorizontalBlogViewProps = {
   blog: Post & {
@@ -31,8 +32,10 @@ function HorizontalBlogView({ blog, className, isWithImage, isWithDescription, .
               <Image
                 src={blog.ogImage || generateOgImage(blog.title)}
                 alt={blog.title}
+                as={NextImage}
                 className="aspect-square object-cover md:max-w-[4rem]"
                 width={300}
+                height={200}
               />
             </div>
           )}
