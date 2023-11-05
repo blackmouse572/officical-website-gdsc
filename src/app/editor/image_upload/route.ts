@@ -1,7 +1,7 @@
 import { env } from '@env';
 import { bucketAdmin } from '@lib/adminApp';
 import { getSessionServerSide, isUserAuthenticated } from '@lib/auth';
-import { ROLE } from '@prisma/client';
+import { db } from '@lib/db';
 import { nanoid } from 'nanoid';
 import { NextRequest, NextResponse } from 'next/server';
 import { Readable } from 'stream';
@@ -17,8 +17,15 @@ type UploadFileResponse = {
 export async function POST(req: NextRequest) {
   const data = await req.formData();
   const session = await getSessionServerSide();
+  const roles = await db.role.findMany({
+    where: {
+      slug: {
+        in: ['author', 'admin'],
+      },
+    },
+  });
 
-  if (!isUserAuthenticated(session, [ROLE.USER]))
+  if (!isUserAuthenticated(session, roles))
     return NextResponse.json<UploadFileResponse>(
       {
         success: 0,

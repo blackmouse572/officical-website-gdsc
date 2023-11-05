@@ -1,7 +1,7 @@
 import { env } from '@env';
 import { bucketAdmin } from '@lib/adminApp';
 import { getSessionServerSide, isUserAuthenticated } from '@lib/auth';
-import { ROLE } from '@prisma/client';
+import { db } from '@lib/db';
 import { nanoid } from 'nanoid';
 import { NextRequest, NextResponse } from 'next/server';
 import { Readable } from 'stream';
@@ -24,7 +24,14 @@ export async function POST(req: NextRequest) {
   const json = await req.json();
   const data = uploadUrlSchema.parse(json);
   const session = await getSessionServerSide();
-  if (!isUserAuthenticated(session, [ROLE.USER]))
+  const roles = await db.role.findMany({
+    where: {
+      slug: {
+        in: ['author', 'admin'],
+      },
+    },
+  });
+  if (!isUserAuthenticated(session, roles))
     return NextResponse.json<UploadFileResponse>(
       {
         success: 0,
@@ -65,7 +72,6 @@ export async function POST(req: NextRequest) {
         .pipe(uploadStream)
         .on('error', reject)
         .on('finish', () => {
-          console.log('New image uploaded to firebase storage: ', filename);
           resolve(null);
         });
     });

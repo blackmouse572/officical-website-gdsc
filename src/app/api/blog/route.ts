@@ -15,11 +15,14 @@ export async function POST(req: NextRequest) {
   const data = createPostSchema.parse(json);
 
   const session = await getSessionServerSide();
-  const roles = await db.role.findMany();
-  const isAuth = isUserAuthenticated(
-    session,
-    roles.filter((role) => role.slug == 'author').map((role) => role.id)
-  );
+  const roles = await db.role.findMany({
+    where: {
+      slug: {
+        in: ['author', 'admin'],
+      },
+    },
+  });
+  const isAuth = isUserAuthenticated(session, roles);
   if (!isAuth) {
     return NextResponse.json(
       {

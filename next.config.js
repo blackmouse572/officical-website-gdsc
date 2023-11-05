@@ -8,23 +8,6 @@ const config = {
     serverComponentsExternalPackages: ['@prisma/client', 'bcrypt'],
   },
   images: {
-    remotePatterns: [
-      {
-        hostname: 'images.unsplash.com',
-        protocol: 'https',
-        pathname: '/**/*',
-      },
-      {
-        hostname: 'localhost',
-        protocol: 'http',
-        pathname: '/**/*',
-      },
-      {
-        hostname: 'gdsc-fptudn.vercel.app',
-        protocol: 'https',
-        pathname: '/**/*',
-      },
-    ],
     domains: ['images.unsplash.com', 'localhost', 'gdsc-fptudn.vercel.app'],
   },
 };

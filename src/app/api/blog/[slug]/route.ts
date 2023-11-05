@@ -24,7 +24,10 @@ export async function GET(request: Request, { params }: { params: { slug: string
   return NextResponse.json(blog);
 }
 
-export async function PATCH(request: Request, { params }: { params: { slug: string } }) {
+export async function PATCH(
+  request: Request,
+  { params }: { params: { slug: string } }
+): Promise<NextResponse | Response> {
   //Check if user is logged in
   const session = await getSessionServerSide();
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -56,9 +59,9 @@ export async function PATCH(request: Request, { params }: { params: { slug: stri
   });
 
   if (!blog) return notFoundResponse({ message: 'Blog not found' });
-  if (!user) return unAuthroizedResponse;
+  if (!user) return unAuthroizedResponse({ message: 'User not found' });
   if (blog.authorId !== user.id && user.role.slug !== 'admin') {
-    return unAuthroizedResponse;
+    return unAuthroizedResponse({ message: 'You are not authorized' });
   }
 
   const body = await request.json();
