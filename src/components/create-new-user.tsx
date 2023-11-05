@@ -6,19 +6,40 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from '@hooks/useToast';
 import { toTitleCase } from '@lib/helper';
 import { Button, Input, Select, SelectItem } from '@nextui-org/react';
-import { ROLE } from '@prisma/client';
+import { Role } from '@prisma/client';
 import { customAlphabet } from 'nanoid';
-import { useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 function CreateNewUserForm() {
+  const [roles, setRoles] = useState<Role[]>([]);
+
+  const getRoles = useCallback(async () => {
+    const res = await fetch('/api/admin/roles', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+    }).then((res) => {
+      if (!res.ok) {
+        throw new Error(res.statusText);
+      }
+      return res.json() as unknown as Role[];
+    });
+    setRoles(res);
+  }, [setRoles]);
+
+  useEffect(() => {
+    getRoles();
+  }, [getRoles, setRoles]);
   const { register, formState, handleSubmit, setValue } = useForm({
     resolver: zodResolver(RegisterSchema),
     defaultValues: {
       name: '',
       email: '',
       password: '',
-      role: ROLE.USER,
+      role: '',
     },
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -65,15 +86,15 @@ function CreateNewUserForm() {
   };
 
   const RoleSelection = useMemo(() => {
-    const roles = Object.keys(ROLE);
-    return roles.map((role) => {
+    if (!roles) return <></>;
+    return roles.map((role: Role) => {
       return (
-        <SelectItem key={role} value={role}>
-          {toTitleCase(role)}
+        <SelectItem key={role.id} value={role.id}>
+          {toTitleCase(role.title)}
         </SelectItem>
       );
     });
-  }, []);
+  }, [roles]);
 
   const generateStrongPassword = () => {
     const length = 12;
@@ -89,7 +110,7 @@ function CreateNewUserForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 max-w-xs mx-auto">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 max-w-xs mx-auto">
       <div className="space-y-2">
         <Input
           {...register('name')}
@@ -146,7 +167,7 @@ function CreateNewUserForm() {
           {...register('role')}
           placeholder="User role"
           labelPlacement="outside-left"
-          defaultSelectedKeys={[ROLE.USER]}
+          // defaultSelectedKeys={roles?[0}
         >
           {RoleSelection}
         </Select>

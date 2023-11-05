@@ -1,7 +1,6 @@
 import { getSessionServerSide, isUserAuthenticated } from '@lib/auth';
 import { db } from '@lib/db';
 import { generateOgImage, slugtify } from '@lib/helper';
-import { ROLE } from '@prisma/client';
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 
@@ -16,7 +15,12 @@ export async function POST(req: NextRequest) {
   const data = createPostSchema.parse(json);
 
   const session = await getSessionServerSide();
-  if (!isUserAuthenticated(session, [ROLE.USER])) {
+  const roles = await db.role.findMany();
+  const isAuth = isUserAuthenticated(
+    session,
+    roles.filter((role) => role.slug == 'author').map((role) => role.id)
+  );
+  if (!isAuth) {
     return NextResponse.json(
       {
         success: 0,

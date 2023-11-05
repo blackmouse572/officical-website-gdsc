@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+
 type NextResponseJson<T> = {
   message?: string;
   success?: number;

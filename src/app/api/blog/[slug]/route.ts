@@ -34,6 +34,9 @@ export async function PATCH(request: Request, { params }: { params: { slug: stri
     where: {
       id: session.user.id,
     },
+    include: {
+      role: true,
+    },
   });
 
   const blog = await db.post.findUnique({
@@ -47,7 +50,6 @@ export async function PATCH(request: Request, { params }: { params: { slug: stri
           email: true,
           name: true,
           image: true,
-          role: true,
         },
       },
     },
@@ -55,7 +57,7 @@ export async function PATCH(request: Request, { params }: { params: { slug: stri
 
   if (!blog) return notFoundResponse({ message: 'Blog not found' });
   if (!user) return unAuthroizedResponse;
-  if (blog.authorId !== user.id && user.role !== 'ADMIN') {
+  if (blog.authorId !== user.id && user.role.slug !== 'admin') {
     return unAuthroizedResponse;
   }
 

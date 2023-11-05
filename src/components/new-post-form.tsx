@@ -95,7 +95,7 @@ function NewPostForm({}: Props) {
           </section>
         </CardHeader>
         <Divider />
-        <CardBody className="space-y-4">
+        <CardBody className="space-y-4 h-full">
           <Input
             label="Title"
             placeholder="Enter a title for your blog"

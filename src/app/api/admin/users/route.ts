@@ -1,11 +1,11 @@
 import { DEFAULT_ALLOWED_CREATE_POSTS, DEFAULT_SALT_ROUNDS } from '@/app/api/admin/users/constraints';
-import { badRequestResponse, createdResponse, unAuthroizedResponse } from '@/app/api/api-helper';
+import { createdResponse } from '@/app/api/api-helper';
 import { RegisterSchema } from '@/validations/auth.validator';
 import { getSessionServerSide } from '@lib/auth';
 import { db } from '@lib/db';
 import { genSalt, hashPassword } from '@lib/hashHelper';
-import { User } from '@prisma/client';
-import { NextRequest } from 'next/server';
+import { Session } from 'next-auth';
+import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(req: NextRequest) {
   const json = await req.json();
@@ -13,10 +13,18 @@ export async function POST(req: NextRequest) {
 
   // TODO: check if user is authenticated and is operator
   const session = await getSessionServerSide();
-  const isAllowedToCreate = checkAllowToCreate(session?.user);
+  const isAllowedToCreate = checkAllowToCreate(session);
 
-  if (!isAllowedToCreate) {
-    return unAuthroizedResponse;
+  if (isAllowedToCreate) {
+    return NextResponse.json(
+      {
+        isSuccess: false,
+        message: 'You are not allowed to create user',
+      },
+      {
+        status: 401,
+      }
+    );
   }
 
   const existingUser = await db.user.findFirst({
@@ -26,9 +34,15 @@ export async function POST(req: NextRequest) {
   });
 
   if (existingUser) {
-    return badRequestResponse({
-      message: 'User already exists',
-    });
+    return NextResponse.json(
+      {
+        isSuccess: false,
+        message: 'Email is already existed',
+      },
+      {
+        status: 400,
+      }
+    );
   }
 
   const salt = genSalt(DEFAULT_SALT_ROUNDS);
@@ -40,19 +54,35 @@ export async function POST(req: NextRequest) {
       name,
       email,
       password,
-      role,
       image,
+      role: {
+        connect: {
+          id: role,
+        },
+      },
     },
   });
 
-  return createdResponse({
+  const res: NextResponse = createdResponse({
     data: newUser,
   });
+  console.log(res);
+
+  return NextResponse.json(
+    {
+      isSuccess: true,
+      message: 'Created successfully',
+      data: newUser,
+    },
+    {
+      status: 201,
+    }
+  );
 }
 
-function checkAllowToCreate(user: Pick<User, 'role'> | undefined) {
-  if (!user) {
+function checkAllowToCreate(session: Session | null) {
+  if (!session) {
     return false;
   }
-  return DEFAULT_ALLOWED_CREATE_POSTS.includes(user.role);
+  return DEFAULT_ALLOWED_CREATE_POSTS.includes(session.user.role.id);
 }

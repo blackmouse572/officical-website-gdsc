@@ -59,6 +59,8 @@ async function ProfileBlogs({}: Props) {
                   as={NextImage}
                   src={blog.ogImage || generateOgImage(blog.title)}
                   alt={blog.title}
+                  width={1200}
+                  height={630}
                   className="aspect-video object-cover"
                 />
                 <CardFooter className="absolute border-1 bottom-1 z-10 ml-1 shadow-sm border-white/20 bg-white/20 rounded-full  w-[calc(100%_-_8px)] backdrop-blur-sm">

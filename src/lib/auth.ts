@@ -4,7 +4,6 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 
 import { db } from '@/lib/db';
 import { isPasswordValid } from '@lib/hashHelper';
-import { ROLE } from '@prisma/client';
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(db),
@@ -27,6 +26,9 @@ export const authOptions: NextAuthOptions = {
         const user = await db.user.findFirst({
           where: {
             email: credentials.email,
+          },
+          include: {
+            role: true,
           },
         });
 
@@ -62,6 +64,9 @@ export const authOptions: NextAuthOptions = {
         where: {
           email: token.email,
         },
+        include: {
+          role: true,
+        },
       });
 
       if (!dbUser) {
@@ -86,12 +91,12 @@ export function getSessionServerSide() {
   return getServerSession(authOptions);
 }
 
-export function isUserAuthenticated(session: Session | null, exceptRoles: ROLE[] = []) {
+export function isUserAuthenticated(session: Session | null, requireRoles?: string[]) {
   if (!session) return false;
   const user = session.user;
 
-  if (exceptRoles.length) {
-    if (exceptRoles.includes(user.role)) return false;
+  if (requireRoles?.length && !requireRoles?.includes(user.role.id)) {
+    return false;
   }
 
   return true;

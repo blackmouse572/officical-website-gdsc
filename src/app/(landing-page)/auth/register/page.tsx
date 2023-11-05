@@ -1,4 +1,3 @@
-import BecomeAMemberForm from '@components/become-member-form';
 import { Divider } from '@nextui-org/divider';
 import Image from 'next/image';
 
@@ -22,12 +21,11 @@ function Registerpage({}: Props) {
           </div>
           <div>
             <Divider className="mb-8" />
-            <BecomeAMemberForm />
           </div>
         </div>
       </section>
       <section className="relative w-full h-full hidden md:block">
-        <Image src={'/images/recap.jpg'} fill alt={'recap image'} objectFit="cover" />
+        <Image src={'/images/recap.jpg'} fill alt={'recap image'} className="object-contain" />
         {/* Image */}
       </section>
     </div>

@@ -1,4 +1,3 @@
-import EditorNavbar from '@components/editor-nav';
 import Editor from '@components/editor/editor';
 import { absoluteUrl, generateOgImage } from '@lib/helper';
 import { Post } from '@prisma/client';
@@ -66,7 +65,6 @@ async function EditBlogPage(props: Props) {
   }
   return (
     <div>
-      <EditorNavbar />
       <Editor post={blog} />
     </div>
   );

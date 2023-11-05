@@ -43,7 +43,7 @@ function BecomeAMemberForm({}: Props) {
   };
 
   return (
-    <form className="mx-auto space-y-4 w-[240px]" onSubmit={handleSubmit(onSubmit)}>
+    <form className="mx-auto space-y-4 min-w-[240px] max-w-md" onSubmit={handleSubmit(onSubmit)}>
       <div className="w-full">
         <Input isRequired className="w-full" label="Name" placeholder="John Doe" {...register('name')} />
         {formState.errors.name && <p className="text-red-500 text-xs pl-2">{formState.errors.name.message}</p>}

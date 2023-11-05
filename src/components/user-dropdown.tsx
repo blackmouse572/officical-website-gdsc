@@ -33,7 +33,7 @@ function UserDropdown() {
   return (
     <Dropdown>
       <DropdownTrigger className="cursor-pointer">
-        <User as="button" name={user?.name} avatarProps={{ src: user?.image ?? '' }} description={user?.role} />
+        <User as="button" name={user?.name} avatarProps={{ src: user?.image ?? '' }} description={user?.role.title} />
       </DropdownTrigger>
       <DropdownMenu
         variant="faded"
@@ -55,7 +55,6 @@ function UserDropdown() {
             color="success"
             as={Link}
             className="data-[hover=true]:bg-success-100/70 data-[hover]:text-success-600"
-            //@ts-ignore
             href="/editor"
           >
             New post

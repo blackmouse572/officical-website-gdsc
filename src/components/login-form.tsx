@@ -5,7 +5,7 @@ import { toast } from '@hooks/useToast';
 import { Button, Input } from '@nextui-org/react';
 import { signIn } from 'next-auth/react';
 import { useSearchParams } from 'next/navigation';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -37,7 +37,8 @@ function LoginForm({ defaultValues }: Props) {
     },
   });
 
-  const onSubmit = async (data: LoginData) => {
+  const onSubmit = async (data: LoginData, e?: React.BaseSyntheticEvent) => {
+    e?.preventDefault();
     setIsSubmitting(true);
     const result = await signIn('credentials', {
       email: data.email,

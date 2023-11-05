@@ -1,6 +1,7 @@
 import BasicOgImage from '@/app/og/basic-og';
 import { OG_IMAGE_SIZE } from '@/app/og/constraint';
-import { ImageResponse, NextRequest } from 'next/server';
+import { ImageResponse } from 'next/og';
+import { NextRequest } from 'next/server';
 
 export const runtime = 'edge';
 
